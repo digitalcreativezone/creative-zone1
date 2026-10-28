@@ -1,18 +1,156 @@
 {
   "wa": "918730074910",
-  "hours": [["Mon – Sat", "10:00 AM – 8:00 PM"], ["Sunday", "Closed"]],
-  "prices": [
-    {"p1": "₹150", "p2": "up to ₹500"},
-    {"p1": "₹200", "p2": "up to ₹600"},
-    {"p1": "₹150", "p2": "up to ₹450"},
-    {"p1": "₹120", "p2": "up to ₹350"},
-    {"p1": "₹499", "p2": "up to ₹1,999"},
-    {"p1": "₹150", "p2": "up to ₹350"},
-    {"p1": "₹100", "p2": "up to ₹300"},
-    {"p1": "₹1,999", "p2": "up to ₹4,500"},
-    {"p1": "₹4,999", "p2": "up to ₹12,000"}
+  "hours": [
+    [
+      "Sun – Sat",
+      "10:00 AM – 10:00 PM"
+    ]
   ],
-  "banner": {"on": false, "en": "", "bn": "", "link": ""},
+  "services": [
+    {
+      "cat": "design",
+      "name": "Flex & Banner Design",
+      "bnName": "ফ্লেক্স ও ব্যানার ডিজাইন",
+      "desc": "Shop boards, hoardings & festival banners (Print-ready CMYK)",
+      "bnDesc": "দোকানের বোর্ড, হোর্ডিং ও উৎসবের ব্যানার (প্রিন্ট-রেডি)",
+      "p1": "₹150",
+      "p2": "up to ₹500",
+      "color": "#f59e0b",
+      "icon": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M7 15l3-3 2 2 4-4 2 2\"/>"
+    },
+    {
+      "cat": "design",
+      "name": "Event & Promotional Poster",
+      "bnName": "ইভেন্ট ও প্রচার পোস্টার",
+      "desc": "Concerts, cultural programs, coaching & flyers",
+      "bnDesc": "কনসার্ট, সাংস্কৃতিক অনুষ্ঠান, কোচিং ও লিফলেট",
+      "p1": "₹200",
+      "p2": "up to ₹600",
+      "color": "#f59e0b",
+      "icon": "<path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"8\" y1=\"13\" x2=\"16\" y2=\"13\"/><line x1=\"8\" y1=\"17\" x2=\"13\" y2=\"17\"/>"
+    },
+    {
+      "cat": "social",
+      "name": "Social Media Post / Ad Creative",
+      "bnName": "সোশ্যাল মিডিয়া পোস্ট / বিজ্ঞাপন",
+      "desc": "Instagram, Facebook & WhatsApp promotional graphics",
+      "bnDesc": "ইনস্টাগ্রাম, ফেসবুক ও হোয়াটসঅ্যাপের প্রচার গ্রাফিক্স",
+      "p1": "₹150",
+      "p2": "up to ₹450",
+      "color": "#ec4899",
+      "icon": "<rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1\"/>"
+    },
+    {
+      "cat": "social",
+      "name": "YouTube Thumbnail & Channel Banner",
+      "bnName": "ইউটিউব থাম্বনেইল ও চ্যানেল ব্যানার",
+      "desc": "High-CTR custom thumbnails & cover art",
+      "bnDesc": "আকর্ষণীয় কাস্টম থাম্বনেইল ও কভার আর্ট",
+      "p1": "₹120",
+      "p2": "up to ₹350",
+      "color": "#ec4899",
+      "icon": "<polygon points=\"5 3 19 12 5 21 5 3\"/>"
+    },
+    {
+      "cat": "brand",
+      "name": "Professional Logo Design",
+      "bnName": "পেশাদার লোগো ডিজাইন",
+      "desc": "Custom vector logo with high-res PNG & source files",
+      "bnDesc": "কাস্টম ভেক্টর লোগো, হাই-রেজ PNG ও সোর্স ফাইল",
+      "p1": "₹499",
+      "p2": "up to ₹1,999",
+      "color": "#10b981",
+      "icon": "<path d=\"M12 2L2 7l10 5 10-5-10-5z\"/><path d=\"M2 17l10 5 10-5\"/><path d=\"M2 12l10 5 10-5\"/>"
+    },
+    {
+      "cat": "brand",
+      "name": "Visiting Card / Business Card",
+      "bnName": "ভিজিটিং কার্ড / বিজনেস কার্ড",
+      "desc": "Single or double-sided print-ready card layout",
+      "bnDesc": "এক বা দুই পাশের প্রিন্ট-রেডি কার্ড ডিজাইন",
+      "p1": "₹150",
+      "p2": "up to ₹350",
+      "color": "#10b981",
+      "icon": "<rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"2\"/><line x1=\"2\" y1=\"10\" x2=\"22\" y2=\"10\"/>"
+    },
+    {
+      "cat": "brand",
+      "name": "ID Card & Lanyard Layout",
+      "bnName": "আইডি কার্ড ও ল্যানইয়ার্ড ডিজাইন",
+      "desc": "Schools, offices, clubs & event volunteer passes",
+      "bnDesc": "স্কুল, অফিস, ক্লাব ও ইভেন্টের পরিচয়পত্র",
+      "p1": "₹100",
+      "p2": "up to ₹300",
+      "color": "#10b981",
+      "icon": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><circle cx=\"12\" cy=\"10\" r=\"2.5\"/><path d=\"M8 17c1-2 7-2 8 0\"/>"
+    },
+    {
+      "cat": "web",
+      "name": "Landing Page / Portfolio Website",
+      "bnName": "ল্যান্ডিং পেজ / পোর্টফোলিও ওয়েবসাইট",
+      "desc": "Fast, mobile-friendly single-page business website",
+      "bnDesc": "দ্রুত, মোবাইল-ফ্রেন্ডলি একপৃষ্ঠার ব্যবসায়িক ওয়েবসাইট",
+      "p1": "₹1,999",
+      "p2": "up to ₹4,500",
+      "color": "#06b6d4",
+      "icon": "<rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\"/><line x1=\"8\" y1=\"21\" x2=\"16\" y2=\"21\"/><line x1=\"12\" y1=\"17\" x2=\"12\" y2=\"21\"/>"
+    },
+    {
+      "cat": "web",
+      "name": "Multi-Page Business Website",
+      "bnName": "মাল্টি-পেজ ব্যবসায়িক ওয়েবসাইট",
+      "desc": "Custom pages, WhatsApp integration, SEO & Google Maps",
+      "bnDesc": "কাস্টম পেজ, হোয়াটসঅ্যাপ, এসইও ও গুগল ম্যাপ",
+      "p1": "₹4,999",
+      "p2": "up to ₹12,000",
+      "color": "#3b82f6",
+      "icon": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"/><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"/>"
+    }
+  ],
+  "banner": {
+    "on": false,
+    "en": "",
+    "bn": "",
+    "link": ""
+  },
   "packages": [],
-  "faq": []
+  "faq": [],
+  "prices": [
+    {
+      "p1": "₹150",
+      "p2": "up to ₹500"
+    },
+    {
+      "p1": "₹200",
+      "p2": "up to ₹600"
+    },
+    {
+      "p1": "₹150",
+      "p2": "up to ₹450"
+    },
+    {
+      "p1": "₹120",
+      "p2": "up to ₹350"
+    },
+    {
+      "p1": "₹499",
+      "p2": "up to ₹1,999"
+    },
+    {
+      "p1": "₹150",
+      "p2": "up to ₹350"
+    },
+    {
+      "p1": "₹100",
+      "p2": "up to ₹300"
+    },
+    {
+      "p1": "₹1,999",
+      "p2": "up to ₹4,500"
+    },
+    {
+      "p1": "₹4,999",
+      "p2": "up to ₹12,000"
+    }
+  ]
 }

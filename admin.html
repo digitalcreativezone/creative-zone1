@@ -33,13 +33,41 @@ nav button[aria-selected=true]{background:var(--ac);color:#0f172a;border-color:v
 .sw{display:flex;align-items:center;gap:10px;font-size:1rem;color:var(--tx)}.sw input{width:22px;height:22px;accent-color:var(--ac)}
 .pv{background:linear-gradient(90deg,#d97706,#f59e0b);color:#0f172a;font-weight:700;text-align:center;padding:9px;border-radius:10px;margin-top:12px;font-size:.9rem}
 .row{display:flex;gap:8px;flex-wrap:wrap}
+/* Password Lock Screen */
+#lockScreen{position:fixed;inset:0;z-index:100;background:var(--bg) radial-gradient(600px 400px at 50% 0,rgba(59,130,246,.18),transparent) no-repeat;display:flex;align-items:center;justify-content:center;padding:20px}
+#lockScreen[hidden]{display:none!important}
+.lock-box{width:100%;max-width:380px;background:rgba(15,23,42,.9);border:1px solid var(--bd);border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.5)}
+.lock-box img{width:56px;height:56px;border-radius:50%;margin-bottom:10px}
+.lock-box h2{font-size:1.2rem;margin:0 0 4px}
+.lock-box p{color:var(--mu);font-size:.85rem;margin:0 0 16px}
+.lock-box input{text-align:center;margin-bottom:12px}
+.lock-box button{width:100%}
+#lockErr{color:#fca5a5;font-size:.82rem;margin-top:10px;display:none}
 </style></head><body>
-<header><img src="logo-96.png" alt=""><h1>Admin panel<small>Digital Creative Zone</small></h1><a href="./" target="_blank" rel="noopener">View site</a><span id="st">Up to date</span></header>
+
+<!-- Password Protection Screen -->
+<div id="lockScreen">
+  <form class="lock-box" id="lockForm">
+    <img src="logo-96.png" alt="Logo">
+    <h2>Admin Login</h2>
+    <p id="lockSub">Enter your admin password to continue</p>
+    <input type="password" id="pwInput" placeholder="Enter password" required autocomplete="current-password">
+    <button type="submit" class="p">Unlock Admin Panel</button>
+    <div id="lockErr">Incorrect password. Please try again.</div>
+  </form>
+</div>
+
+<header><img src="logo-96.png" alt=""><h1>Admin panel<small>Digital Creative Zone</small></h1><a href="./" target="_blank" rel="noopener">View site</a><button class="ic" id="lockBtn" title="Lock panel">🔒 Lock</button><span id="st">Up to date</span></header>
 <nav aria-label="Sections"></nav>
 <main><div id="msg" role="status"></div><div id="p"></div></main>
 <div class="bar"><button class="p" id="pub">Publish changes</button><button id="dl">Download config.json</button></div>
 <input type="file" id="imp" accept=".json,application/json" hidden>
 <script>
+// ==========================================
+// DEFAULT ADMIN PASSWORD (you can change this below or inside the Publish/Security tab)
+const DEFAULT_PASS = 'dcz@2026';
+// ==========================================
+
 const $=s=>document.querySelector(s),clone=o=>JSON.parse(JSON.stringify(o)),
 esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SVC=['Flex & Banner Design','Event & Promotional Poster','Social Media Post / Ad Creative','YouTube Thumbnail & Channel Banner','Professional Logo Design','Visiting Card / Business Card','ID Card & Lanyard Layout','Landing Page / Portfolio Website','Multi-Page Business Website'];
@@ -52,10 +80,40 @@ faq:[{q:'How long does a design take?',qBn:'ডিজাইন করতে ক�
 {q:'How many revisions do I get?',qBn:'কতবার পরিবর্তন করা যাবে?',a:'Edit this answer with your own revision policy.',aBn:'এখানে আপনার রিভিশন নীতি লিখুন।'},
 {q:'Which file formats do I receive?',qBn:'কোন ফরম্যাটে ফাইল পাব?',a:'PNG and JPG for screens, print-ready PDF for banners and cards. Logo source files are included.',aBn:'স্ক্রিনের জন্য PNG ও JPG, ব্যানার ও কার্ডের জন্য প্রিন্ট-রেডি PDF। লোগোর সোর্স ফাইলও পাবেন।'},
 {q:'How do I pay?',qBn:'পেমেন্ট কীভাবে করব?',a:'Edit this answer with your payment terms.',aBn:'এখানে আপনার পেমেন্টের নিয়ম লিখুন।'}]};
-const TABS=[['gen','General'],['pri','Prices'],['ban','Offer banner'],['pkg','Packages'],['faq','FAQ'],['pub','Publish']];
+const TABS=[['gen','General'],['pri','Prices'],['ban','Offer banner'],['pkg','Packages'],['faq','FAQ'],['pub','Publish & Security']];
 let cfg=clone(DEF),tab='gen',dirty=false;
 const get=p=>p.split('.').reduce((o,k)=>o[k],cfg),set=(p,v)=>{const a=p.split('.'),l=a.pop();a.reduce((o,k)=>o[k],cfg)[l]=v};
 const ls=()=>{try{const o=JSON.parse(localStorage.getItem('dcz-admin'))||{};if(o.repo==='digitalcreativezone/creative-zone')o.repo='digitalcreativezone/creative-zone1';return o}catch(e){return{}}},sv=o=>{try{localStorage.setItem('dcz-admin',JSON.stringify(Object.assign(ls(),o)))}catch(e){}};
+
+// Password Gate Logic
+function getExpectedPass(){const s=ls();return s.pass||DEFAULT_PASS;}
+function checkAuth(){
+  if(sessionStorage.getItem('dcz-unlocked')==='1'){
+    $('#lockScreen').hidden=true;
+  }else{
+    $('#lockScreen').hidden=false;
+    setTimeout(()=>$('#pwInput').focus(),50);
+  }
+}
+$('#lockForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const entered=$('#pwInput').value;
+  if(entered===getExpectedPass()){
+    sessionStorage.setItem('dcz-unlocked','1');
+    $('#pwInput').value='';
+    $('#lockErr').style.display='none';
+    $('#lockScreen').hidden=true;
+  }else{
+    $('#lockErr').style.display='block';
+    $('#pwInput').select();
+  }
+});
+$('#lockBtn').addEventListener('click',()=>{
+  sessionStorage.removeItem('dcz-unlocked');
+  checkAuth();
+});
+checkAuth();
+
 const inp=(p,l,ta)=>'<label>'+l+(ta?'<textarea data-p="'+p+'" rows="2">'+esc(get(p)||'')+'</textarea>':'<input data-p="'+p+'" value="'+esc(get(p)||'')+'">')+'</label>';
 const tools=(l,i)=>'<span>'+['up|↑|Move up','dn|↓|Move down','del|✕|Remove'].map(x=>{x=x.split('|');return '<button class="ic" data-a="'+x[0]+'" data-l="'+l+'" data-i="'+i+'" aria-label="'+x[2]+'">'+x[1]+'</button>'}).join('')+'</span>';
 const addBtn=(l,t)=>'<button data-a="add" data-l="'+l+'">'+t+'</button>';
@@ -66,7 +124,7 @@ pri:()=>SVC.map((n,i)=>'<div class="c"><b>'+esc(n)+'</b><div class="g"><div>'+in
 ban:()=>'<div class="c"><label class="sw"><input type="checkbox" data-p="banner.on"'+(cfg.banner.on?' checked':'')+'> Show the offer banner</label>'+inp('banner.en','Banner text (English)')+inp('banner.bn','Banner text (Bengali)')+inp('banner.link','Link when tapped (optional, https://… or #packages)')+'<div class="pv">'+esc(cfg.banner.en||'Your banner text appears here')+'</div></div>',
 pkg:()=>(cfg.packages.length?'':empty('packages','package'))+cfg.packages.map((p,i)=>'<div class="c"><div class="t"><b>Package '+(i+1)+'</b>'+tools('packages',i)+'</div><div class="g"><div>'+inp('packages.'+i+'.name','Name (English)')+'</div><div>'+inp('packages.'+i+'.bn','Name (Bengali)')+'</div><div>'+inp('packages.'+i+'.price','Price, e.g. ₹999')+'</div><div>'+inp('packages.'+i+'.was','Old price, crossed out (optional)')+'</div></div>'+inp('packages.'+i+'.desc','What is included (English)',1)+inp('packages.'+i+'.descBn','What is included (Bengali)',1)+'</div>').join('')+(cfg.packages.length?addBtn('packages','Add package'):''),
 faq:()=>(cfg.faq.length?'':empty('faq','question'))+cfg.faq.map((x,i)=>'<div class="c"><div class="t"><b>Question '+(i+1)+'</b>'+tools('faq',i)+'</div>'+inp('faq.'+i+'.q','Question (English)')+inp('faq.'+i+'.a','Answer (English)',1)+inp('faq.'+i+'.qBn','Question (Bengali)')+inp('faq.'+i+'.aBn','Answer (Bengali)',1)+'</div>').join('')+(cfg.faq.length?addBtn('faq','Add question'):''),
-pub:()=>{const s=ls();return '<div class="c"><h2>GitHub connection</h2><label>Repository (owner/name)<input data-s="repo" value="'+esc(s.repo||'digitalcreativezone/creative-zone1')+'"></label><label>Branch<input data-s="br" value="'+esc(s.br||'main')+'"></label><label>Access token<input data-s="tok" type="password" autocomplete="off" value="'+esc(s.tok||'')+'"></label><p class="h">Create a fine-grained token on GitHub (Settings → Developer settings), limited to this one repository, with Contents set to read and write. Only the token can publish, so keep it private. It is saved on this device only.</p><div class="row" style="margin-top:10px"><button id="forget">Forget token</button></div></div><div class="c"><h2>Backup</h2><p class="h">Download config.json to keep a copy, or upload it to the repository by hand.</p><div class="row"><button id="imb">Import config.json</button><button id="rl">Reload from site</button></div></div>'}};
+pub:()=>{const s=ls();return '<div class="c"><h2>Admin Password</h2><label>Change password for this device<input id="newPass" type="password" placeholder="Enter new password"></label><div class="row" style="margin-top:10px"><button id="savePass">Save new password</button><button id="resetPass">Reset to default ('+esc(DEFAULT_PASS)+')</button></div></div><div class="c"><h2>GitHub connection</h2><label>Repository (owner/name)<input data-s="repo" value="'+esc(s.repo||'digitalcreativezone/creative-zone1')+'"></label><label>Branch<input data-s="br" value="'+esc(s.br||'main')+'"></label><label>Access token<input data-s="tok" type="password" autocomplete="off" value="'+esc(s.tok||'')+'"></label><p class="h">Create a fine-grained token on GitHub (Settings → Developer settings), limited to this one repository, with Contents set to read and write. Only the token can publish, so keep it private. It is saved on this device only.</p><div class="row" style="margin-top:10px"><button id="forget">Forget token</button></div></div><div class="c"><h2>Backup</h2><p class="h">Download config.json to keep a copy, or upload it to the repository by hand.</p><div class="row"><button id="imb">Import config.json</button><button id="rl">Reload from site</button></div></div>'}};
 function st(){const e=$('#st');e.textContent=dirty?'Unsaved changes':'Up to date';e.className=dirty?'d':''}
 function render(){st();$('nav').innerHTML=TABS.map(t=>'<button data-t="'+t[0]+'" aria-selected="'+(t[0]===tab)+'">'+t[1]+'</button>').join('');$('#p').innerHTML=P[tab]()}
 function say(t,er){const m=$('#msg');m.textContent=t;m.className=er?'er':'ok';m.scrollIntoView({block:'nearest'})}
@@ -84,7 +142,7 @@ const f=c.faq.findIndex(x=>!x.q||!x.a);if(f>-1)return 'Question '+(f+1)+' needs 
 const w=c.prices.findIndex(x=>!x.p1);if(w>-1)return 'Service "'+SVC[w]+'" needs a starting price.';return ''}
 const b64=s=>{let b='';new TextEncoder().encode(s).forEach(x=>b+=String.fromCharCode(x));return btoa(b)};
 async function publish(){const c=out(),er=check(c);if(er)return say(er,1);const s=ls();
-if(!s.tok)return say('Add your GitHub token under Publish first.',1);
+if(!s.tok)return say('Add your GitHub token under Publish & Security first.',1);
 const url='https://api.github.com/repos/'+(s.repo||'digitalcreativezone/creative-zone1')+'/contents/config.json',br=s.br||'main',
 H={Authorization:'Bearer '+s.tok,Accept:'application/vnd.github+json'},btn=$('#pub');btn.disabled=true;btn.textContent='Publishing…';
 try{let sha,r=await fetch(url+'?ref='+encodeURIComponent(br),{headers:H,cache:'no-store'});
@@ -92,7 +150,7 @@ if(r.ok)sha=(await r.json()).sha;else if(r.status!==404)throw r.status;
 const body={message:'Update site content from admin panel',content:b64(JSON.stringify(c,null,2)+'\n'),branch:br};if(sha)body.sha=sha;
 r=await fetch(url,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},H),body:JSON.stringify(body)});
 if(!r.ok)throw r.status;dirty=false;st();say('Published. The live site updates in about a minute.')}
-catch(e){say(e===401?'GitHub rejected the token. Create a new one and paste it under Publish.':e===403||e===404?'The token cannot write to this repository. Check the repository name and that Contents is set to read and write.':e===409?'The file changed on GitHub while you were editing. Press Publish again.':'Could not publish. Check your connection, or download config.json instead.',1)}
+catch(e){say(e===401?'GitHub rejected the token. Create a new one and paste it under Publish & Security.':e===403||e===404?'The token cannot write to this repository. Check the repository name and that Contents is set to read and write.':e===409?'The file changed on GitHub while you were editing. Press Publish again.':'Could not publish. Check your connection, or download config.json instead.',1)}
 btn.disabled=false;btn.textContent='Publish changes'}
 function fromSite(){return fetch('config.json?'+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)}
 document.addEventListener('input',e=>{const t=e.target;
@@ -103,6 +161,8 @@ const b=e.target.closest('[data-a]');if(b){const a=b.dataset.a,A=cfg[b.dataset.l
 if(a==='del')A.splice(n,1);else if(a==='up'&&n>0)[A[n-1],A[n]]=[A[n],A[n-1]];else if(a==='dn'&&n<A.length-1)[A[n+1],A[n]]=[A[n],A[n+1]];
 else if(a==='add')A.push(NEW[b.dataset.l]());else if(a==='ex')EX[b.dataset.l].forEach(x=>A.push(clone(x)));
 dirty=true;return render()}
+if(e.target.id==='savePass'){const np=$('#newPass').value.trim();if(!np)return say('Please enter a new password first.',1);sv({pass:np});$('#newPass').value='';say('Admin password updated on this device.')}
+if(e.target.id==='resetPass'){sv({pass:''});say('Password reset to default ('+DEFAULT_PASS+').')}
 if(e.target.id==='forget'){sv({tok:''});render();say('Token removed from this device.')}
 if(e.target.id==='imb')$('#imp').click();
 if(e.target.id==='rl')fromSite().then(c=>{if(!c)return say('Could not load config.json from the site.',1);load(c);dirty=false;st();say('Loaded the current content from your site.')})});

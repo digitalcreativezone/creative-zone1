@@ -110,7 +110,7 @@ background: var(--accent-light);
 
 html {
 scroll-behavior: smooth;
-scroll-padding-top: 88px;
+scroll-padding-top: 76px;
 -webkit-text-size-adjust: 100%;
 text-size-adjust: 100%;
 }
@@ -134,13 +134,13 @@ overflow-x: clip;
 transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Lightweight Glassmorphism: Only on key primary containers for 60fps performance */
+/* Lightweight Glassmorphism */
 .navbar, .hero-card, .modal, .toast {
 -webkit-backdrop-filter: blur(12px);
 backdrop-filter: blur(12px);
 }
 
-/* Subtle glass border highlight on cards without heavy GPU blur */
+/* Subtle glass border highlight on cards */
 .hero-card, .item, .work-card, .contact-banner, .oform, .pkg {
 box-shadow: var(--glass-highlight), 0 6px 20px -4px rgba(0, 0, 0, 0.2);
 transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
@@ -169,34 +169,40 @@ animation-delay: calc(var(--i, 0) * 45ms);
 position: sticky;
 top: 0;
 z-index: 40;
-background: rgba(7, 11, 20, 0.82);
+background: rgba(7, 11, 20, 0.88);
 border-bottom: 1px solid var(--border);
 }
 
 .nav-inner {
 max-width: 1160px;
 margin: 0 auto;
-padding: 14px 20px;
+padding: 11px 20px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-gap: 16px;
+gap: 12px;
 }
 
 .brand {
-font-size: 1.15rem;
+font-size: 1.1rem;
 font-weight: 800;
 letter-spacing: -0.02em;
 display: inline-flex;
 align-items: center;
-gap: 10px;
+gap: 9px;
 color: var(--text);
 text-decoration: none;
+min-width: 0;
 }
 
+.brand-text {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
 .brand-text span { color: var(--accent-light); }
 
-.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links { display: flex; align-items: center; gap: 18px; }
 
 .nav-links a {
 color: var(--muted);
@@ -211,25 +217,57 @@ transition: color 0.2s ease;
 display: inline-flex;
 align-items: center;
 gap: 8px;
-padding: 8px 16px;
+padding: 7px 14px;
 border-radius: var(--radius-sm);
 background: var(--wa-green);
 border: 1px solid var(--wa-border);
 color: #fff;
-font-size: 0.875rem;
+font-size: 0.85rem;
 font-weight: 700;
 transition: transform 0.15s ease, background 0.2s ease;
 }
 .nav-links a.nav-cta:hover { background: #166534; transform: translateY(-1px); }
 
 .nav-cta svg {
-width: 16px; height: 16px;
+width: 15px; height: 15px;
 fill: none; stroke: currentColor; stroke-width: 2;
 stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* Main Container */
-main { max-width: 1160px; margin: 0 auto; padding: 40px 20px 104px; }
+/* Compact Mobile Navigation Drawer */
+.menu-toggle { display: none; }
+.mobile-nav {
+display: none;
+border-top: 1px solid var(--border);
+background: rgba(15, 23, 42, 0.96);
+padding: 10px 16px;
+}
+.mobile-nav.open {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+justify-content: center;
+}
+.mobile-nav a {
+flex: 1 1 calc(50% - 8px);
+min-width: 130px;
+text-align: center;
+padding: 9px 12px;
+border-radius: var(--radius-sm);
+background: var(--bg-card);
+border: 1px solid var(--border);
+color: var(--text);
+text-decoration: none;
+font-size: 0.85rem;
+font-weight: 600;
+}
+.mobile-nav a:hover, .mobile-nav a:active {
+border-color: var(--accent-light);
+color: var(--accent-light);
+}
+
+/* Main Container — extra bottom padding so FAB never overlaps footer/buttons */
+main { max-width: 1160px; margin: 0 auto; padding: 36px 20px 116px; }
 
 /* Hero Section */
 .hero {
@@ -237,9 +275,9 @@ display: grid;
 grid-template-columns: 1.25fr 0.75fr;
 gap: 32px;
 align-items: center;
-padding: 20px 0 48px;
+padding: 16px 0 44px;
 border-bottom: 1px solid var(--border);
-margin-bottom: 48px;
+margin-bottom: 44px;
 }
 
 .tag-badge {
@@ -258,10 +296,10 @@ text-transform: uppercase;
 }
 
 h1 {
-font-size: clamp(2.25rem, 5vw, 3.5rem);
+font-size: clamp(2.1rem, 5vw, 3.4rem);
 line-height: 1.08;
 letter-spacing: -0.03em;
-margin: 18px 0 14px;
+margin: 16px 0 14px;
 font-weight: 800;
 }
 
@@ -273,7 +311,7 @@ background-clip: text;
 color: var(--accent-light);
 }
 
-.sub { margin: 0 0 24px; color: var(--muted); font-size: 1.1rem; max-width: 560px; }
+.sub { margin: 0 0 24px; color: var(--muted); font-size: 1.05rem; max-width: 560px; }
 
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 
@@ -282,10 +320,10 @@ display: inline-flex;
 align-items: center;
 justify-content: center;
 gap: 10px;
-padding: 12px 22px;
+padding: 12px 20px;
 border-radius: var(--radius-sm);
 font-family: var(--font-sans);
-font-size: 0.95rem;
+font-size: 0.94rem;
 font-weight: 700;
 cursor: pointer;
 text-decoration: none;
@@ -308,9 +346,9 @@ stroke-linecap: round; stroke-linejoin: round;
 background: var(--bg-elevated);
 border: 1px solid var(--border);
 border-radius: var(--radius-lg);
-padding: 24px;
+padding: 22px;
 display: grid;
-gap: 16px;
+gap: 14px;
 }
 
 .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -321,7 +359,7 @@ border: 1px solid var(--border);
 border-radius: var(--radius-md);
 padding: 14px;
 }
-.stat-box strong { display: block; font-family: var(--font-mono); font-size: 1.35rem; color: var(--text); }
+.stat-box strong { display: block; font-family: var(--font-mono); font-size: 1.3rem; color: var(--text); }
 .stat-box span { font-size: 0.8rem; color: var(--muted); }
 
 .loc-link {
@@ -348,35 +386,29 @@ display: flex;
 flex-wrap: wrap;
 align-items: flex-end;
 justify-content: space-between;
-gap: 16px;
-margin-bottom: 24px;
+gap: 14px;
+margin-bottom: 22px;
 }
-.section-head h2 { margin: 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; }
-.section-head p { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; }
+.section-head h2 { margin: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.section-head p { margin: 4px 0 0; color: var(--muted); font-size: 0.94rem; max-width: 620px; }
 
-/* Filter Tabs with Custom Accent Scrollbar */
+/* Filter Tabs — Wrap cleanly onto multiple lines so no categories are hidden off-screen */
 .tabs {
 display: flex;
+flex-wrap: wrap;
 gap: 8px;
-max-width: 100%;
-overflow-x: auto;
-padding-bottom: 8px;
-scrollbar-width: thin;
-scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+width: 100%;
 }
-.tabs::-webkit-scrollbar { height: 5px; display: block; }
-.tabs::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 99px; }
-.tabs::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
 
 .tab {
-flex: none;
+flex: 0 1 auto;
 border: 1px solid var(--border);
 background: var(--bg-card);
 color: var(--muted);
 font-family: var(--font-sans);
 font-weight: 600;
-font-size: 0.875rem;
-padding: 8px 16px;
+font-size: 0.85rem;
+padding: 8px 14px;
 border-radius: var(--radius-sm);
 cursor: pointer;
 transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -385,15 +417,15 @@ transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 .tab[aria-pressed="true"] { background: var(--accent-light); color: #0f172a; border-color: var(--accent-light); }
 
 /* Service List */
-.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 18px; }
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
 
 .item {
 position: relative;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
-gap: 18px;
-padding: 20px;
+gap: 16px;
+padding: 18px;
 border-radius: var(--radius-md);
 background: var(--bg-card);
 border: 1px solid var(--border);
@@ -405,8 +437,8 @@ border: 1px solid var(--border);
 
 .ico {
 flex: none;
-width: 46px;
-height: 46px;
+width: 44px;
+height: 44px;
 display: grid;
 place-items: center;
 border-radius: 10px;
@@ -420,22 +452,22 @@ fill: none; stroke: currentColor; stroke-width: 1.8;
 stroke-linecap: round; stroke-linejoin: round;
 }
 
-.name { flex: 1; min-width: 0; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
-.name small { display: block; margin-top: 4px; font-size: 0.84rem; font-weight: 400; color: var(--muted); }
+.name { flex: 1; min-width: 0; font-weight: 700; font-size: 1.02rem; line-height: 1.3; }
+.name small { display: block; margin-top: 4px; font-size: 0.83rem; font-weight: 400; color: var(--muted); }
 
 .item-bottom {
 display: flex;
 align-items: flex-end;
 justify-content: space-between;
 gap: 12px;
-padding-top: 14px;
+padding-top: 12px;
 border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .prices { line-height: 1.15; }
-.from { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.p1 { font-family: var(--font-mono); font-size: 1.45rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; margin: 2px 0; }
-.p2 { font-size: 0.78rem; color: var(--muted); }
+.from { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.p1 { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; margin: 2px 0; }
+.p2 { font-size: 0.76rem; color: var(--muted); }
 
 .item-quote {
 display: inline-flex;
@@ -455,21 +487,24 @@ transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 .item-quote:hover { background: var(--c); color: #070b14; border-color: var(--c); }
 
 .note {
-margin: 22px 0 0;
-padding: 14px 18px;
+margin: 20px 0 0;
+padding: 13px 16px;
 border-radius: var(--radius-sm);
 background: rgba(255, 255, 255, 0.03);
 border: 1px solid var(--border);
 color: var(--muted);
-font-size: 0.88rem;
+font-size: 0.86rem;
 text-align: center;
 }
 
-/* Portfolio */
-.portfolio-section { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); }
-.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+/* Portfolio Showcase */
+.portfolio-section { margin-top: 60px; padding-top: 44px; border-top: 1px solid var(--border); }
+.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 265px), 1fr)); gap: 18px; }
 
 .work-card {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
 background: var(--bg-card);
 border: 1px solid var(--border);
 border-radius: var(--radius-md);
@@ -479,6 +514,7 @@ overflow: hidden;
 .work-card:hover { transform: translateY(-3px); border-color: var(--border-hover); }
 
 .work-thumb {
+position: relative;
 aspect-ratio: 16 / 10;
 background: #0f172a;
 display: grid;
@@ -490,68 +526,114 @@ perspective: 900px;
 .work-thumb svg, .work-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .work-thumb svg {
 font-family: var(--font-sans);
-transform: rotateY(-5deg) rotateX(2deg) scale(1.06);
+transform: rotateY(-4deg) rotateX(2deg) scale(1.04);
 transition: transform 0.3s ease;
 }
-.work-card:hover .work-thumb svg { transform: rotateY(0) rotateX(0) scale(1.06); }
+.work-card:hover .work-thumb svg { transform: rotateY(0) rotateX(0) scale(1.04); }
 
-.work-meta { padding: 14px 16px; }
-.work-meta span { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-light); }
-.work-meta h3 { margin: 4px 0 0; font-size: 0.98rem; font-weight: 700; }
+.work-meta {
+padding: 14px 16px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+flex: 1;
+}
+.work-head {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+}
+.work-cat {
+font-size: 0.7rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+color: var(--accent-light);
+}
+.work-badge {
+font-size: 0.68rem;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 99px;
+background: rgba(16, 185, 129, 0.14);
+border: 1px solid rgba(16, 185, 129, 0.35);
+color: #34d399;
+white-space: nowrap;
+}
+.work-badge.concept {
+background: rgba(56, 189, 248, 0.12);
+border-color: rgba(56, 189, 248, 0.3);
+color: #38bdf8;
+}
+.work-meta h3 { margin: 0; font-size: 0.98rem; font-weight: 700; line-height: 1.3; }
+.work-desc { margin: 0; font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+.work-cta {
+margin-top: auto;
+padding-top: 8px;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+font-size: 0.78rem;
+font-weight: 700;
+color: var(--accent-light);
+text-decoration: none;
+}
+.work-cta:hover { text-decoration: underline; }
 
 /* Contact */
 .contact-banner {
-margin-top: 64px;
-padding: 40px 28px;
+margin-top: 60px;
+padding: 36px 24px;
 border-radius: var(--radius-lg);
 background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
 border: 1px solid var(--border-hover);
 text-align: center;
 }
-.contact-banner h2 { margin: 0 0 8px; font-size: clamp(1.5rem, 3.5vw, 2.1rem); font-weight: 800; }
-.contact-banner p { margin: 0 auto 24px; color: var(--muted); max-width: 500px; }
+.contact-banner h2 { margin: 0 0 8px; font-size: clamp(1.45rem, 3.5vw, 2rem); font-weight: 800; }
+.contact-banner p { margin: 0 auto 22px; color: var(--muted); max-width: 500px; }
 
 .btn-wa-large {
 display: inline-flex;
 align-items: center;
 justify-content: center;
 gap: 10px;
-min-height: 52px;
-padding: 0 28px;
+min-height: 50px;
+padding: 0 26px;
 border-radius: var(--radius-sm);
 background: var(--wa-green);
 border: 1px solid var(--wa-border);
 color: #fff;
 font-weight: 700;
-font-size: 1.05rem;
+font-size: 1rem;
 text-decoration: none;
 transition: transform 0.2s ease, background 0.2s ease;
 }
 .btn-wa-large:hover { background: #166534; transform: translateY(-2px); }
-.btn-wa-large svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+.btn-wa-large svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 .contact-details {
-margin-top: 20px;
+margin-top: 18px;
 display: flex;
 flex-wrap: wrap;
 justify-content: center;
 gap: 8px 20px;
-font-size: 0.92rem;
+font-size: 0.9rem;
 color: var(--muted);
 }
 .contact-details a { color: var(--text); text-decoration: none; font-family: var(--font-mono); overflow-wrap: anywhere; }
 .contact-details a:hover { text-decoration: underline; }
 
 footer {
-margin-top: 48px;
-padding-top: 24px;
+margin-top: 44px;
+padding-top: 22px;
 border-top: 1px solid var(--border);
 display: flex;
 flex-wrap: wrap;
 justify-content: space-between;
 align-items: center;
 gap: 12px;
-font-size: 0.85rem;
+font-size: 0.84rem;
 color: var(--muted);
 }
 
@@ -565,7 +647,7 @@ display: none;
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
 touch-action: pan-x pan-y;
-padding: 24px 16px;
+padding: 20px 14px;
 overscroll-behavior: contain;
 }
 .modal.open { display: flex; flex-direction: column; align-items: center; }
@@ -574,7 +656,7 @@ overscroll-behavior: contain;
 .modal-box {
 flex: none;
 width: 100%;
-max-width: 1000px;
+max-width: 960px;
 background: #0f172a;
 border: 1px solid var(--border-hover);
 border-radius: var(--radius-lg);
@@ -587,14 +669,14 @@ box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 16px 20px;
+padding: 14px 18px;
 background: rgba(15, 23, 42, 0.95);
 border-bottom: 1px solid var(--border);
 }
-.bar h2 { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.bar h2 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text); }
 
 .x {
-width: 36px; height: 36px;
+width: 34px; height: 34px;
 border-radius: var(--radius-sm);
 border: 1px solid var(--border);
 background: rgba(255, 255, 255, 0.06);
@@ -607,19 +689,19 @@ cursor: pointer;
 /* Animated Success Toast Notification */
 .toast {
 position: fixed;
-right: 24px;
-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+right: 20px;
+bottom: calc(78px + env(safe-area-inset-bottom, 0px));
 z-index: 80;
 display: flex;
 align-items: center;
 gap: 12px;
-max-width: min(400px, calc(100vw - 32px));
-padding: 14px 18px;
+max-width: min(380px, calc(100vw - 32px));
+padding: 12px 16px;
 border-radius: var(--radius-md);
-background: rgba(15, 23, 42, 0.88);
+background: rgba(15, 23, 42, 0.92);
 border: 1px solid var(--wa-border);
 color: var(--text);
-font-size: 0.9rem;
+font-size: 0.88rem;
 font-weight: 600;
 box-shadow: var(--glass-highlight), 0 12px 28px rgba(0, 0, 0, 0.4);
 transform: translateX(calc(100% + 40px));
@@ -633,8 +715,8 @@ opacity: 1;
 pointer-events: auto;
 }
 .toast-ico {
-width: 28px;
-height: 28px;
+width: 26px;
+height: 26px;
 border-radius: 50%;
 background: rgba(34, 197, 94, 0.2);
 border: 1px solid var(--wa-border);
@@ -644,8 +726,8 @@ place-items: center;
 flex: none;
 }
 .toast-ico svg {
-width: 16px;
-height: 16px;
+width: 15px;
+height: 15px;
 fill: none;
 stroke: currentColor;
 stroke-width: 2.5;
@@ -656,14 +738,45 @@ stroke-linejoin: round;
 :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
 [hidden]{display:none!important}
-.icon-btn{min-width:38px;height:36px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-card);color:var(--text);font:600 .85rem var(--font-sans);cursor:pointer}
+.icon-btn{min-width:36px;height:34px;padding:0 9px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-card);color:var(--text);font:600 .82rem var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .icon-btn:hover{border-color:var(--border-hover)}
-.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--wa-green);border:2px solid var(--wa-border);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s ease}
-.fab:hover{transform:scale(1.06)}
-.fab svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.panel{margin-top:64px;padding-top:48px;border-top:1px solid var(--border)}
-.panel h2{margin:0 0 6px;font-size:1.65rem;font-weight:800;letter-spacing:-.02em}
-.panel>p{margin:0 0 22px;color:var(--muted)}
+
+/* Less Intrusive Floating WhatsApp Button (48px, extra edge spacing, auto-hides on form/contact) */
+.fab {
+position: fixed;
+right: 20px;
+bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+z-index: 45;
+width: 48px;
+height: 48px;
+border-radius: 50%;
+display: grid;
+place-items: center;
+background: var(--wa-green);
+border: 1.5px solid var(--wa-border);
+color: #fff;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.fab:hover { transform: scale(1.06); }
+.fab.fab-hidden {
+opacity: 0;
+pointer-events: none;
+transform: translateY(16px) scale(0.85);
+}
+.fab svg {
+width: 22px;
+height: 22px;
+fill: none;
+stroke: currentColor;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+.panel{margin-top:60px;padding-top:44px;border-top:1px solid var(--border)}
+.panel h2{margin:0 0 6px;font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.panel>p{margin:0 0 20px;color:var(--muted)}
 .oform{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;align-items:end;padding:22px;border-radius:var(--radius-lg);background:var(--bg-card);border:1px solid var(--border)}
 .oform label{display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)}
 .oform input,.oform select{width:100%;min-height:46px;padding:0 12px;border-radius:var(--radius-sm);border:1px solid var(--border-hover);background:var(--bg);color:var(--text);font:500 1rem var(--font-sans)}
@@ -679,9 +792,10 @@ stroke-linejoin: round;
 .viewer::-webkit-scrollbar{display:none}
 .slide{flex:none;width:100%;scroll-snap-align:center;border:0;border-radius:0;background:transparent;cursor:default!important;opacity:1;animation:none}
 .slide:hover{transform:none}
-.slide .work-thumb{max-height:72vh;border-bottom:0}
+.slide .work-thumb{max-height:70vh;border-bottom:0}
 .slide .work-thumb svg{transform:none}
-.nav-arrow{position:absolute;top:calc(50% - 40px);z-index:2;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-hover);background:rgba(7,11,20,.75);color:#fff;font-size:1.6rem;line-height:1;cursor:pointer}
+.slide .work-cta{display:none}
+.nav-arrow{position:absolute;top:calc(50% - 40px);z-index:2;width:42px;height:42px;border-radius:50%;border:1px solid var(--border-hover);background:rgba(7,11,20,.75);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer}
 .nav-arrow:hover{background:rgba(7,11,20,.95)}
 .nav-arrow.prev{left:10px}.nav-arrow.next{right:10px}
 
@@ -699,13 +813,16 @@ html[data-theme=light]{
 --accent-light:#b45309;
 --accent:#92400e;
 }
-html[data-theme=light] .navbar{background:rgba(248,250,252,.85)}
+html[data-theme=light] .navbar{background:rgba(248,250,252,.9)}
+html[data-theme=light] .mobile-nav{background:rgba(248,250,252,.97)}
 html[data-theme=light] .btn-primary,html[data-theme=light] .tab[aria-pressed=true]{color:#fff}
 html[data-theme=light] h1 b{background:linear-gradient(135deg,#b45309,#0369a1);-webkit-background-clip:text;background-clip:text}
 html[data-theme=light] .loc-link{color:#0e7490}
 html[data-theme=light] .ico,html[data-theme=light] .stat-box{background:rgba(15,23,42,.04);border-color:var(--border)}
 html[data-theme=light] .item-bottom{border-top-color:var(--border)}
 html[data-theme=light] .item-quote{background:rgba(15,23,42,.05)}
+html[data-theme=light] .work-badge{color:#047857;background:rgba(16,185,129,.12)}
+html[data-theme=light] .work-badge.concept{color:#0369a1;background:rgba(56,189,248,.12)}
 html[data-theme=light] .contact-banner{background:linear-gradient(135deg,#fff,#e2e8f0)}
 html[data-theme=light] .modal{background:rgba(248,250,252,.92)}
 html[data-theme=light] .modal-box,html[data-theme=light] .bar{background:#fff}
@@ -713,13 +830,20 @@ html[data-theme=light] .toast{background:rgba(255,255,255,.95);color:#0f172a}
 
 @media (max-width: 820px) {
 .hero, .visit-grid { grid-template-columns: 1fr; gap: 20px; }
-.nav-links { gap: 10px; }
+.nav-inner { padding: 9px 14px; }
+.nav-links { gap: 6px; }
 .nav-links a:not(.nav-cta) { display: none; }
+.menu-toggle { display: inline-flex; }
+.brand-logo { width: 34px; height: 34px; }
 }
-@media(max-width:480px){.nav-links a.nav-cta{display:none}}
+@media (max-width: 520px) {
+.nav-links a.nav-cta { display: none; }
+.tab { font-size: 0.8rem; padding: 7px 11px; }
+.fab { width: 44px; height: 44px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+.fab svg { width: 20px; height: 20px; }
+}
 @media (max-width: 380px) {
-.nav-inner { padding: 12px 14px; }
-.brand { font-size: 1rem; }
+.brand { font-size: 0.96rem; gap: 7px; }
 .stat-row { grid-template-columns: 1fr; }
 }
 
@@ -737,8 +861,8 @@ html { scroll-behavior: auto; }
 .repeat:hover{background:rgba(34,197,94,.1)}
 :root{color-scheme:dark}
 html[data-theme=light]{color-scheme:light}
-.brand-logo{width:40px;height:40px;border-radius:50%;flex:none;display:block}
-#offerBar{position:relative;display:flex;align-items:center;justify-content:center;padding:9px 44px 9px 14px;background:linear-gradient(90deg,#d97706,#f59e0b);color:#0f172a;font-weight:700;font-size:.9rem;text-align:center}
+.brand-logo{width:38px;height:38px;border-radius:50%;flex:none;display:block}
+#offerBar{position:relative;display:flex;align-items:center;justify-content:center;padding:8px 44px 8px 14px;background:linear-gradient(90deg,#d97706,#f59e0b);color:#0f172a;font-weight:700;font-size:.88rem;text-align:center}
 #offerBar a{color:inherit;text-decoration:underline}
 #offerBar button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:inherit;font-size:1.1rem;cursor:pointer;padding:8px 10px}
 .pkgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
@@ -758,7 +882,7 @@ html[data-theme=light]{color-scheme:light}
 <body>
 <div id="offerBar" role="status" hidden></div>
 
-<!-- Shared gradients & filters for the sample designs -->
+<!-- Shared gradients & filters for the portfolio mockups -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
 <linearGradient id="gBgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e1b4b"/><stop offset="1" stop-color="#0f172a"/></linearGradient>
@@ -782,20 +906,30 @@ html[data-theme=light]{color-scheme:light}
 <nav class="navbar" aria-label="Main Navigation">
 <div class="nav-inner">
 <a href="#top" class="brand" aria-label="Digital Creative Zone – home">
-<img class="brand-logo" src="logo-96.png" alt="" width="40" height="40">
+<img class="brand-logo" src="logo-96.png" alt="" width="38" height="38">
 <span class="brand-text">Digital <span>Creative Zone</span></span>
 </a>
 <div class="nav-links">
 <a href="#services">Price List</a>
-<a href="#portfolio">Sample Work</a>
+<a href="#portfolio">Portfolio</a>
+<a href="#order">Custom Order</a>
 <a href="#contact">Contact</a>
 <button type="button" class="icon-btn" id="langBtn" aria-label="Switch language">বাংলা</button>
 <button type="button" class="icon-btn" id="themeBtn" aria-label="Switch light or dark theme">☀</button>
+<button type="button" class="icon-btn menu-toggle" id="menuBtn" aria-expanded="false" aria-controls="mobileNav" aria-label="Toggle navigation menu">☰</button>
 <a class="nav-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20need%20a%20design%20quote." target="_blank" rel="noopener noreferrer">
 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
 Get Quote
 </a>
 </div>
+</div>
+<!-- Compact Mobile Quick-Jump Menu -->
+<div class="mobile-nav" id="mobileNav" aria-label="Mobile Navigation">
+<a href="#services" class="m-link">Price List</a>
+<a href="#portfolio" class="m-link">Portfolio</a>
+<a href="#order" class="m-link">Custom Order</a>
+<a href="#visit" class="m-link">Visit Shop</a>
+<a href="#contact" class="m-link">Contact Us</a>
 </div>
 </nav>
 
@@ -809,7 +943,7 @@ Get Quote
 <div class="hero-actions">
 <button type="button" class="btn-primary" id="sampBtn" aria-haspopup="dialog">
 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 9"/></svg>
-View Sample Designs
+View Portfolio Mockups
 </button>
 <a class="btn-secondary" href="#services">Explore Price List</a>
 </div>
@@ -838,18 +972,18 @@ Chanban, Udaipur, Gomati, Tripura
 <div class="section-head">
 <div>
 <h2 id="services-title">Transparent Price List</h2>
-<p>Filter by category or tap Enquire on any service to request a custom WhatsApp quote.</p>
+<p>Select a category below or tap Enquire on any service to get an instant WhatsApp quote.</p>
 </div>
 <div class="tabs" id="tabs" role="group" aria-label="Filter services">
 <button type="button" class="tab" data-f="all" aria-pressed="true">All</button>
 <button type="button" class="tab" data-f="design" aria-pressed="false">Posters & Banners</button>
-<button type="button" class="tab" data-f="social" aria-pressed="false">Social</button>
+<button type="button" class="tab" data-f="social" aria-pressed="false">Social Media</button>
 <button type="button" class="tab" data-f="brand" aria-pressed="false">Branding</button>
 <button type="button" class="tab" data-f="web" aria-pressed="false">Websites</button>
 </div>
 </div>
 
-<div class="list" id="list" aria-live="polite"><!--SERVICES:START--><article class="item" data-cat="design" style="--c: #f59e0b; --i: 0"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15l3-3 2 2 4-4 2 2"/></svg></div><div class="name">Flex &amp; Banner Design<small>Shop boards, hoardings &amp; festival banners (Print-ready CMYK)</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹500</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Flex%20%26%20Banner%20Design%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9500)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Flex &amp; Banner Design on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="design" style="--c: #f59e0b; --i: 1"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div><div class="name">Event &amp; Promotional Poster<small>Concerts, cultural programs, coaching &amp; flyers</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹200</div><div class="p2">up to ₹600</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Event%20%26%20Promotional%20Poster%20(%E2%82%B9200%20%E2%80%93%20%E2%82%B9600)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Event &amp; Promotional Poster on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="social" style="--c: #ec4899; --i: 2"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></div><div class="name">Social Media Post / Ad Creative<small>Instagram, Facebook &amp; WhatsApp promotional graphics</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹450</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Social%20Media%20Post%20%2F%20Ad%20Creative%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9450)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Social Media Post / Ad Creative on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="social" style="--c: #ec4899; --i: 3"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div class="name">YouTube Thumbnail &amp; Channel Banner<small>High-CTR custom thumbnails &amp; cover art</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹120</div><div class="p2">up to ₹350</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20YouTube%20Thumbnail%20%26%20Channel%20Banner%20(%E2%82%B9120%20%E2%80%93%20%E2%82%B9350)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about YouTube Thumbnail &amp; Channel Banner on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 4"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="name">Professional Logo Design<small>Custom vector logo with high-res PNG &amp; source files</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹499</div><div class="p2">up to ₹1,999</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Professional%20Logo%20Design%20(%E2%82%B9499%20%E2%80%93%20%E2%82%B91%2C999)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Professional Logo Design on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 5"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div class="name">Visiting Card / Business Card<small>Single or double-sided print-ready card layout</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹350</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Visiting%20Card%20%2F%20Business%20Card%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9350)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Visiting Card / Business Card on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 6"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17c1-2 7-2 8 0"/></svg></div><div class="name">ID Card &amp; Lanyard Layout<small>Schools, offices, clubs &amp; event volunteer passes</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹100</div><div class="p2">up to ₹300</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20ID%20Card%20%26%20Lanyard%20Layout%20(%E2%82%B9100%20%E2%80%93%20%E2%82%B9300)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about ID Card &amp; Lanyard Layout on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="web" style="--c: #06b6d4; --i: 7"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="name">Landing Page / Portfolio Website<small>Fast, mobile-friendly single-page business website</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹1,999</div><div class="p2">up to ₹4,500</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Landing%20Page%20%2F%20Portfolio%20Website%20(%E2%82%B91%2C999%20%E2%80%93%20%E2%82%B94%2C500)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Landing Page / Portfolio Website on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="web" style="--c: #3b82f6; --i: 8"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="name">Multi-Page Business Website<small>Custom pages, WhatsApp integration, SEO &amp; Google Maps</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹4,999</div><div class="p2">up to ₹12,000</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Multi-Page%20Business%20Website%20(%E2%82%B94%2C999%20%E2%80%93%20%E2%82%B912%2C000)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Multi-Page Business Website on WhatsApp">Enquire →</a></div></article><!--SERVICES:END--></div>
+<div class="list" id="list" aria-live="polite"><!--SERVICES:START--><article class="item" data-cat="design" style="--c: #f59e0b; --i: 0"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15l3-3 2 2 4-4 2 2"/></svg></div><div class="name">Flex & Banner Design<small>Shop boards, hoardings & festival banners (Print-ready CMYK)</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹500</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Flex%20%26%20Banner%20Design%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9500)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Flex & Banner Design on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="design" style="--c: #f59e0b; --i: 1"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div><div class="name">Event & Promotional Poster<small>Concerts, cultural programs, coaching & flyers</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹200</div><div class="p2">up to ₹600</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Event%20%26%20Promotional%20Poster%20(%E2%82%B9200%20%E2%80%93%20%E2%82%B9600)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Event & Promotional Poster on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="social" style="--c: #ec4899; --i: 2"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></div><div class="name">Social Media Post / Ad Creative<small>Instagram, Facebook & WhatsApp promotional graphics</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹450</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Social%20Media%20Post%20%2F%20Ad%20Creative%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9450)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Social Media Post / Ad Creative on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="social" style="--c: #ec4899; --i: 3"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div class="name">YouTube Thumbnail & Channel Banner<small>High-CTR custom thumbnails & cover art</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹120</div><div class="p2">up to ₹350</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20YouTube%20Thumbnail%20%26%20Channel%20Banner%20(%E2%82%B9120%20%E2%80%93%20%E2%82%B9350)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about YouTube Thumbnail & Channel Banner on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 4"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="name">Professional Logo Design<small>Custom vector logo with high-res PNG & source files</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹499</div><div class="p2">up to ₹1,999</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Professional%20Logo%20Design%20(%E2%82%B9499%20%E2%80%93%20%E2%82%B91%2C999)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Professional Logo Design on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 5"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div class="name">Visiting Card / Business Card<small>Single or double-sided print-ready card layout</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹150</div><div class="p2">up to ₹350</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Visiting%20Card%20%2F%20Business%20Card%20(%E2%82%B9150%20%E2%80%93%20%E2%82%B9350)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Visiting Card / Business Card on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="brand" style="--c: #10b981; --i: 6"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17c1-2 7-2 8 0"/></svg></div><div class="name">ID Card & Lanyard Layout<small>Schools, offices, clubs & event volunteer passes</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹100</div><div class="p2">up to ₹300</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20ID%20Card%20%26%20Lanyard%20Layout%20(%E2%82%B9100%20%E2%80%93%20%E2%82%B9300)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about ID Card & Lanyard Layout on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="web" style="--c: #06b6d4; --i: 7"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="name">Landing Page / Portfolio Website<small>Fast, mobile-friendly single-page business website</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹1,999</div><div class="p2">up to ₹4,500</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Landing%20Page%20%2F%20Portfolio%20Website%20(%E2%82%B91%2C999%20%E2%80%93%20%E2%82%B94%2C500)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Landing Page / Portfolio Website on WhatsApp">Enquire →</a></div></article><article class="item" data-cat="web" style="--c: #3b82f6; --i: 8"><div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="name">Multi-Page Business Website<small>Custom pages, WhatsApp integration, SEO & Google Maps</small></div></div><div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">₹4,999</div><div class="p2">up to ₹12,000</div></div><a class="item-quote" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I'd%20like%20a%20quote%20for%20Multi-Page%20Business%20Website%20(%E2%82%B94%2C999%20%E2%80%93%20%E2%82%B912%2C000)." target="_blank" rel="noopener noreferrer" aria-label="Enquire about Multi-Page Business Website on WhatsApp">Enquire →</a></div></article><!--SERVICES:END--></div>
 
 <p class="note">Suggested prices. Final price depends on design quality, complexity and your requirements.</p>
 </section>
@@ -861,27 +995,65 @@ Chanban, Udaipur, Gomati, Tripura
 <div class="pkgs" id="pkgList"></div>
 </section>
 
-<!-- Portfolio Showcase -->
+<!-- Portfolio Showcase (8 Real-World & Print Mockup Examples) -->
 <section id="portfolio" class="portfolio-section" aria-labelledby="portfolio-title">
 <div class="section-head">
 <div>
-<h2 id="portfolio-title">Sample Designs</h2>
-<p>Concept samples for imaginary brands: banners, posters, branding and websites, designed to show the quality you can expect.</p>
+<h2 id="portfolio-title">Portfolio & Print Mockups</h2>
+<p>Real-world layouts for local shops, coaching institutes, and businesses—shown alongside print & device mockups so you can see how your final product will look.</p>
 </div>
 <div class="tabs" id="portfolioTabs" role="group" aria-label="Filter portfolio">
-<button type="button" class="tab" data-pf="all" aria-pressed="true">All</button>
+<button type="button" class="tab" data-pf="all" aria-pressed="true">All (8)</button>
 <button type="button" class="tab" data-pf="banners" aria-pressed="false">Posters & Banners</button>
-<button type="button" class="tab" data-pf="branding" aria-pressed="false">Branding</button>
+<button type="button" class="tab" data-pf="social" aria-pressed="false">Social Ads</button>
+<button type="button" class="tab" data-pf="branding" aria-pressed="false">Logos & Cards</button>
 <button type="button" class="tab" data-pf="websites" aria-pressed="false">Websites</button>
 </div>
 </div>
 
 <div class="portfolio-grid" id="portfolioGrid">
 
-<!-- 1. Festival flex banner -->
-<article class="work-card" style="--i: 0" data-pcat="banners" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open sample designs gallery: Festival flex banner">
+<!-- 1. Local Shop Advertisement Board -->
+<article class="work-card" style="--i: 0" data-pcat="banners" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Local Shop Advertisement">
 <div class="work-thumb">
-<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diwali sale flex banner design for a sweet shop">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Retail shop fascia board and promotional standee mockup">
+<rect width="400" height="250" fill="url(#gBgD)"/>
+<ellipse cx="200" cy="228" rx="165" ry="8" fill="#000" opacity="0.45"/>
+<!-- Storefront Awning & Frame -->
+<rect x="28" y="26" width="344" height="176" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" filter="url(#fShadow)"/>
+<!-- Main Illuminated Shop Signboard -->
+<rect x="38" y="36" width="324" height="114" rx="5" fill="url(#gP2)" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="48" y="46" width="110" height="20" rx="10" fill="#fde047"/>
+<text x="103" y="59.5" text-anchor="middle" font-size="9" font-weight="800" fill="#0f172a">GRAND OPENING</text>
+<text x="48" y="90" font-size="23" font-weight="800" fill="#ffffff">TRIPURA</text>
+<text x="48" y="114" font-size="20" font-weight="800" fill="#fde047">ELECTRONICS &amp; MOBILE</text>
+<text x="48" y="135" font-size="9.5" font-weight="600" fill="#e0f2fe">Smartphones • LED TVs • 0% Downpayment EMI</text>
+<!-- Smartphone Graphic on Board -->
+<g transform="translate(310 92) rotate(-8)">
+<rect x="-26" y="-44" width="52" height="88" rx="7" fill="#0f172a" stroke="#f8fafc" stroke-width="2"/>
+<rect x="-22" y="-37" width="44" height="74" rx="4" fill="url(#gP1)"/>
+<text x="0" y="-6" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">5G</text>
+<text x="0" y="10" text-anchor="middle" font-size="8" font-weight="800" fill="#fde047">SALE</text>
+</g>
+<!-- Footer Address Strip -->
+<rect x="38" y="156" width="324" height="36" rx="4" fill="#1e293b"/>
+<text x="50" y="178" font-size="9.5" font-weight="700" fill="#f8fafc">📍 Hospital Road, Udaipur, Gomati</text>
+<rect x="262" y="164" width="90" height="20" rx="4" fill="#22c55e"/>
+<text x="307" y="177.5" text-anchor="middle" font-size="8.5" font-weight="800" fill="#052e16">UP TO 30% OFF</text>
+</svg>
+</div>
+<div class="work-meta">
+<div class="work-head"><span class="work-cat">Posters & Banners</span><em class="work-badge">Client Ready</em></div>
+<h3>Local Shop Advertisement</h3>
+<p class="work-desc">Outdoor shop hoarding & retail promo board in print-ready CMYK.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Local%20Shop%20Advertisement%20Banner%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
+</div>
+</article>
+
+<!-- 2. Festival Flex Banner -->
+<article class="work-card" style="--i: 1" data-pcat="banners" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Festival Flex Banner">
+<div class="work-thumb">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diwali sale flex banner design with metal eyelets">
 <rect width="400" height="250" fill="url(#gBgA)"/>
 <circle cx="200" cy="110" r="150" fill="#f59e0b" opacity="0.07"/>
 <path d="M110 0V36M290 0V36" stroke="#94a3b8" stroke-width="2"/>
@@ -896,7 +1068,7 @@ Chanban, Udaipur, Gomati, Tripura
 <text x="64" y="113" font-size="40" font-weight="800" fill="#7f1d1d">DIWALI</text>
 <text x="62" y="110" font-size="40" font-weight="800" fill="#ffffff">DIWALI</text>
 <text x="64" y="139" font-size="25" font-weight="800" letter-spacing="1" fill="#7f1d1d">DHAMAKA</text>
-<text x="62" y="136" font-size="25" font-weight="800" letter-spacing="1" fill="#fde047">DHAMAKA</text>
+<text x="62" y="136" font-size="25" font-weight="800" fill="#fde047">DHAMAKA</text>
 <g transform="translate(306 102) rotate(12)">
 <g fill="#fde047">
 <rect x="-36" y="-36" width="72" height="72"/>
@@ -922,140 +1094,257 @@ Chanban, Udaipur, Gomati, Tripura
 </svg>
 </div>
 <div class="work-meta">
-<span>Posters & Banners</span>
+<div class="work-head"><span class="work-cat">Posters & Banners</span><em class="work-badge">Print Mockup</em></div>
 <h3>Festival Flex Banner</h3>
+<p class="work-desc">Hanging flex banner mockup with grommets for seasonal & Puja offers.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Festival%20Flex%20Banner%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
 </div>
 </article>
 
-<!-- 2. Event poster -->
-<article class="work-card" style="--i: 1" data-pcat="banners" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open sample designs gallery: Event poster">
+<!-- 3. Coaching Centre Admission Poster -->
+<article class="work-card" style="--i: 2" data-pcat="banners" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Coaching Centre Admission Poster">
 <div class="work-thumb">
-<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Youth festival event poster and coaching admission poster">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coaching centre admission flyer and cultural event poster mockup">
 <rect width="400" height="250" fill="url(#gBgB)"/>
-<ellipse cx="150" cy="226" rx="72" ry="7" fill="#000" opacity="0.4"/>
-<ellipse cx="286" cy="214" rx="56" ry="6" fill="#000" opacity="0.4"/>
-
-<!-- Back poster: admissions -->
-<g transform="translate(286 132) rotate(8)">
-<rect x="-50" y="-72" width="100" height="144" rx="3" fill="url(#gP2)" filter="url(#fShadow)"/>
-<circle cx="30" cy="-50" r="30" fill="#ffffff" opacity="0.08"/>
-<circle cx="-30" cy="50" r="36" fill="#ffffff" opacity="0.08"/>
-<rect x="-14" y="-78" width="28" height="10" fill="#fef3c7" opacity="0.7" transform="rotate(3)"/>
-<g text-anchor="middle" font-weight="800">
-<text y="-44" font-size="10.5" letter-spacing="1" fill="#ffffff">ADMISSIONS</text>
-<text x="2" y="-11" font-size="30" fill="#0c4a6e">OPEN</text>
-<text y="-14" font-size="30" fill="#fde047">OPEN</text>
-<text y="4" font-size="6.8" font-weight="600" fill="#e0f2fe">Coaching • Classes 9–12</text>
+<ellipse cx="200" cy="228" rx="135" ry="7" fill="#000" opacity="0.4"/>
+<!-- Back flyer: Cultural event -->
+<g transform="translate(122 128) rotate(-7)">
+<rect x="-54" y="-82" width="108" height="164" rx="4" fill="url(#gP1)" filter="url(#fShadow)"/>
+<text y="-58" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="1.5" fill="#fef9c3">ANNUAL CULTURAL NIGHT</text>
+<circle cx="0" cy="-24" r="22" fill="#fde047"/>
+<text y="22" text-anchor="middle" font-size="19" font-weight="800" fill="#ffffff">UDAIPUR</text>
+<text y="38" text-anchor="middle" font-size="13" font-weight="800" fill="#fde047">YOUTH FEST</text>
+<rect x="-54" y="56" width="108" height="26" fill="#1e1b4b" opacity="0.75"/>
+<text y="72" text-anchor="middle" font-size="6.5" font-weight="600" fill="#ffffff">Town Hall • Free Pass</text>
 </g>
-<rect x="-32" y="16" width="64" height="18" rx="9" fill="#f59e0b"/>
-<g text-anchor="middle">
-<text y="28.5" font-size="7.5" font-weight="800" fill="#0f172a">ENROLL NOW</text>
-<text y="52" font-size="6.8" font-weight="700" fill="#ffffff">Limited Seats Only</text>
-<text y="62" font-size="6.2" fill="#bae6fd">Udaipur, Tripura</text>
-</g>
-</g>
-
-<!-- Front poster: youth fest -->
-<g transform="translate(150 128) rotate(-6)">
-<rect x="-60" y="-86" width="120" height="172" rx="3" fill="url(#gP1)" filter="url(#fShadow)"/>
-<rect x="-60" y="-86" width="120" height="172" rx="3" fill="none" stroke="#ffffff" stroke-opacity="0.35"/>
-<rect x="-14" y="-92" width="28" height="10" fill="#fef3c7" opacity="0.7" transform="rotate(-3)"/>
-<text y="-68" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing="2" fill="#fef9c3">LIVE • 14 NOV</text>
-<circle cx="0" cy="-34" r="26" fill="#fde047"/>
-<path d="M-25-26H25M-21-18H21M-13-10H13" stroke="#f97316" stroke-width="2" opacity="0.6"/>
-<path d="M-60 8L-28-12 -2 6 26-16 60 8V83a3 3 0 0 1-3 3H-57a3 3 0 0 1-3-3Z" fill="#4c1d95"/>
-<path d="M-60 26L-34 10 -8 26 20 6 60 26V83a3 3 0 0 1-3 3H-57a3 3 0 0 1-3-3Z" fill="#3b0764" opacity="0.92"/>
-<g text-anchor="middle" font-weight="800">
-<text x="1.5" y="35.5" font-size="26" fill="#1e1b4b">YOUTH</text>
-<text y="34" font-size="26" fill="#ffffff">YOUTH</text>
-<text y="52" font-size="15" letter-spacing="1" fill="#fde047">FEST 2026</text>
-<text y="62" font-size="6.5" font-weight="700" letter-spacing="1.5" fill="#e9d5ff">MUSIC • DANCE • ART</text>
-</g>
-<rect x="-60" y="68" width="120" height="18" fill="#1e1b4b" opacity="0.65"/>
-<text y="79.5" text-anchor="middle" font-size="6.2" font-weight="600" fill="#ffffff">Town Hall, Udaipur • Free Entry</text>
+<!-- Front prominent poster: Coaching Admission -->
+<g transform="translate(248 124) rotate(4)">
+<rect x="-74" y="-92" width="148" height="184" rx="5" fill="url(#gP2)" stroke="#bae6fd" stroke-width="1.5" filter="url(#fShadow)"/>
+<rect x="-56" y="-82" width="112" height="16" rx="8" fill="#fde047"/>
+<text y="-71" text-anchor="middle" font-size="8" font-weight="800" fill="#0f172a">APEX COACHING CENTRE</text>
+<text y="-45" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">ADMISSIONS</text>
+<text y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#fde047">OPEN 2026</text>
+<rect x="-62" y="-8" width="124" height="36" rx="4" fill="#0c4a6e" opacity="0.75"/>
+<text y="6" text-anchor="middle" font-size="8.5" font-weight="700" fill="#ffffff">Classes IX, X, XI &amp; XII (Sci/Arts)</text>
+<text y="20" text-anchor="middle" font-size="7.5" font-weight="600" fill="#7dd3fc">TBSE &amp; CBSE • JEE / NEET Foundation</text>
+<text x="-58" y="44" font-size="7.5" font-weight="700" fill="#e0f2fe">✓ Weekly Mock Tests &amp; Study Material</text>
+<text x="-58" y="56" font-size="7.5" font-weight="700" fill="#e0f2fe">✓ Experienced Faculty • Small Batches</text>
+<rect x="-54" y="66" width="108" height="18" rx="9" fill="#f59e0b"/>
+<text y="78" text-anchor="middle" font-size="8" font-weight="800" fill="#0f172a">NEW BATCH: 5 MAY</text>
 </g>
 </svg>
 </div>
 <div class="work-meta">
-<span>Posters & Banners</span>
-<h3>Event & Admission Posters</h3>
+<div class="work-head"><span class="work-cat">Posters & Banners</span><em class="work-badge">Client Ready</em></div>
+<h3>Coaching Admission Poster</h3>
+<p class="work-desc">High-visibility A3/A4 admission flyer & pamphlet for tuition centres.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Coaching%20Admission%20Poster%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
 </div>
 </article>
 
-<!-- 3. Brand identity -->
-<article class="work-card" style="--i: 2" data-pcat="branding" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open sample designs gallery: Brand identity">
+<!-- 4. Social Media Advertisement -->
+<article class="work-card" style="--i: 3" data-pcat="social" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Social Media Advertisement">
 <div class="work-thumb">
-<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brand identity set: logo, business cards and staff ID card for a tea company">
-<rect width="400" height="250" fill="url(#gBgC)"/>
-<ellipse cx="190" cy="226" rx="150" ry="8" fill="#000" opacity="0.4"/>
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Instagram and Facebook restaurant food delivery ad mockup on smartphone">
+<rect width="400" height="250" fill="url(#gBgA)"/>
+<circle cx="310" cy="60" r="90" fill="#ec4899" opacity="0.12"/>
+<!-- Floating Social Engagement Badges -->
+<g transform="translate(56 76) rotate(-8)" filter="url(#fShadow)">
+<rect width="78" height="32" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.2"/>
+<text x="39" y="20" text-anchor="middle" font-size="10" font-weight="800" fill="#f472b6">❤️ 1.4K Likes</text>
+</g>
+<g transform="translate(278 158) rotate(6)" filter="url(#fShadow)">
+<rect width="88" height="32" rx="8" fill="#15803d" stroke="#4ade80" stroke-width="1.2"/>
+<text x="44" y="20" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff">Order on WA ↗</text>
+</g>
+<!-- Smartphone Frame Showing 1080x1080 Ad Post -->
+<g transform="translate(200 125)">
+<rect x="-72" y="-108" width="144" height="216" rx="14" fill="#0f172a" stroke="#64748b" stroke-width="2" filter="url(#fShadow)"/>
+<rect x="-64" y="-96" width="128" height="192" rx="8" fill="#ffffff"/>
+<!-- App Header -->
+<circle cx="-50" cy="-84" r="6" fill="#f97316"/>
+<text x="-39" y="-81" font-size="7.5" font-weight="800" fill="#0f172a"> spice_haven_udaipur</text>
+<text x="-39" y="-73" font-size="5.5" font-weight="600" fill="#64748b">Sponsored • Udaipur</text>
+<!-- Square 1:1 Ad Creative -->
+<rect x="-64" y="-66" width="128" height="124" fill="url(#gBoard)"/>
+<text x="0" y="-48" text-anchor="middle" font-size="7.5" font-weight="800" letter-spacing="1.5" fill="#fef08a">WEEKEND SPECIAL</text>
+<text x="0" y="-26" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">ROYAL</text>
+<text x="0" y="-7" text-anchor="middle" font-size="18" font-weight="800" fill="#fde047">BIRYANI COMBO</text>
+<!-- Stylized Food Bowl Illustration -->
+<ellipse cx="0" cy="24" rx="38" ry="14" fill="#fde68a"/>
+<path d="M-38 24 Q0 52 38 24 Z" fill="#78350f"/>
+<circle cx="-10" cy="21" r="6" fill="#ea580c"/>
+<circle cx="8" cy="23" r="6.5" fill="#dc2626"/>
+<circle cx="0" cy="18" r="5" fill="#16a34a"/>
+<!-- Price Badge -->
+<circle cx="42" cy="8" r="17" fill="#fde047" stroke="#7f1d1d" stroke-width="1.5"/>
+<text x="42" y="6" text-anchor="middle" font-size="6" font-weight="800" fill="#7f1d1d">ONLY</text>
+<text x="42" y="16" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">₹149</text>
+<rect x="-50" y="40" width="100" height="13" rx="6.5" fill="#0f172a"/>
+<text x="0" y="49" text-anchor="middle" font-size="6.5" font-weight="700" fill="#fde047">FREE HOME DELIVERY</text>
+<!-- CTA Strip -->
+<rect x="-64" y="58" width="128" height="18" fill="#eff6ff"/>
+<text x="-56" y="70" font-size="7" font-weight="800" fill="#1d4ed8">Order Now on WhatsApp</text>
+<text x="54" y="70" text-anchor="end" font-size="8" font-weight="800" fill="#1d4ed8">→</text>
+<text x="-56" y="87" font-size="7" font-weight="700" fill="#0f172a">❤️ 💬 🚀   Booked 40+ orders today!</text>
+</g>
+</svg>
+</div>
+<div class="work-meta">
+<div class="work-head"><span class="work-cat">Social Media</span><em class="work-badge">Ad Mockup</em></div>
+<h3>Social Media Ad Creative</h3>
+<p class="work-desc">Scroll-stopping 1080×1080 Instagram & Facebook ad graphics for local brands.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Social%20Media%20Ad%20Creative%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
+</div>
+</article>
 
-<!-- Business card (back side) -->
-<g transform="translate(146 92) rotate(-9)">
-<rect x="-78" y="-47" width="156" height="94" rx="7" fill="url(#gGreen)" filter="url(#fShadow)"/>
-<rect x="-78" y="-47" width="156" height="94" rx="7" fill="none" stroke="#4ade80" stroke-opacity="0.35"/>
-<g transform="translate(0 -8) scale(2)">
+<!-- 5. Professional Logo Design -->
+<article class="work-card" style="--i: 4" data-pcat="branding" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Professional Logo Design">
+<div class="work-thumb">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vector logo construction grid and dark/light brand mark presentation">
+<rect width="400" height="250" fill="url(#gBgC)"/>
+<!-- Left: Main Vector Logo Construction Card -->
+<rect x="28" y="28" width="204" height="194" rx="10" fill="#0f172a" stroke="#10b981" stroke-opacity="0.45" filter="url(#fShadow)"/>
+<!-- Subtle Construction Grid Lines -->
+<g stroke="#334155" stroke-width="0.7" stroke-dasharray="3 3">
+<line x1="28" y1="106" x2="232" y2="106"/>
+<line x1="130" y1="28" x2="130" y2="222"/>
+<circle cx="130" cy="106" r="44" fill="none"/>
+<circle cx="130" cy="106" r="28" fill="none"/>
+</g>
+<!-- Vector Emblem -->
+<circle cx="130" cy="106" r="40" fill="url(#gGreen)" stroke="#4ade80" stroke-width="2"/>
+<path d="M130 76 C152 82 154 114 130 130 C106 114 108 82 130 76 Z" fill="#4ade80"/>
+<path d="M130 84 V126 M130 102 L140 94 M130 112 L120 104" stroke="#052e16" stroke-width="2.5" stroke-linecap="round"/>
+<text x="130" y="172" text-anchor="middle" font-size="15" font-weight="800" letter-spacing="2.5" fill="#ffffff">HILL &amp; LEAF</text>
+<text x="130" y="187" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing="3.5" fill="#4ade80">ORGANIC TEA EST.</text>
+<text x="130" y="208" text-anchor="middle" font-size="6.5" font-family="monospace" fill="#94a3b8">VECTOR • AI • EPS • SVG • PNG</text>
+<!-- Right Top: Light Background Variant -->
+<rect x="248" y="28" width="124" height="90" rx="8" fill="#f8fafc" filter="url(#fShadow)"/>
+<circle cx="310" cy="62" r="18" fill="#14532d"/>
+<path d="M310 50 C320 53 320 68 310 74 C300 68 300 53 310 50 Z" fill="#4ade80"/>
+<text x="310" y="94" text-anchor="middle" font-size="9" font-weight="800" fill="#0f172a">HILL &amp; LEAF</text>
+<text x="310" y="106" text-anchor="middle" font-size="6" font-weight="700" fill="#64748b">LIGHT MODE</text>
+<!-- Right Bottom: Brand Color Swatches & Stamp -->
+<rect x="248" y="132" width="124" height="90" rx="8" fill="#1e293b" stroke="#334155" filter="url(#fShadow)"/>
+<text x="262" y="152" font-size="7.5" font-weight="800" fill="#e2e8f0">BRAND PALETTE</text>
+<rect x="262" y="162" width="28" height="28" rx="5" fill="#14532d"/>
+<rect x="296" y="162" width="28" height="28" rx="5" fill="#4ade80"/>
+<rect x="330" y="162" width="28" height="28" rx="5" fill="#fef3c7"/>
+<text x="262" y="206" font-size="6.5" font-family="monospace" fill="#94a3b8">#14532D  #4ADE80  #FEF3C7</text>
+</svg>
+</div>
+<div class="work-meta">
+<div class="work-head"><span class="work-cat">Logos & Cards</span><em class="work-badge concept">Brand Concept</em></div>
+<h3>Professional Logo Design</h3>
+<p class="work-desc">Scalable vector logo package with color palette, light/dark modes & source files.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Professional%20Logo%20Design%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
+</div>
+</article>
+
+<!-- 6. Professional Visiting Card -->
+<article class="work-card" style="--i: 5" data-pcat="branding" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Professional Visiting Card">
+<div class="work-thumb">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Front and back double-sided visiting card print mockup">
+<rect width="400" height="250" fill="url(#gBgC)"/>
+<ellipse cx="200" cy="226" rx="150" ry="8" fill="#000" opacity="0.4"/>
+<!-- Back side of Visiting Card -->
+<g transform="translate(142 94) rotate(-8)">
+<rect x="-88" y="-52" width="176" height="104" rx="7" fill="url(#gGreen)" stroke="#4ade80" stroke-opacity="0.4" filter="url(#fShadow)"/>
+<g transform="translate(0 -10) scale(1.9)">
 <path d="M0-13C11-10 12 6 0 13C-12 6-11-10 0-13Z" fill="#4ade80"/>
 <path d="M0-9V12" stroke="#14532d" stroke-width="1.2" stroke-linecap="round"/>
 </g>
-<text y="34" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="2.5" fill="#bbf7d0">HILL & LEAF</text>
+<text y="30" text-anchor="middle" font-size="10" font-weight="800" letter-spacing="2.5" fill="#bbf7d0">HILL &amp; LEAF TEA CO.</text>
+<text y="42" text-anchor="middle" font-size="6.5" fill="#86efac">www.hillandleaf.in</text>
 </g>
-
-<!-- Business card (front side) -->
-<g transform="translate(172 134) rotate(5)">
-<rect x="-83" y="-49" width="170" height="104" rx="7" fill="#a8a29e"/>
-<rect x="-85" y="-52" width="170" height="104" rx="7" fill="url(#gCream)" filter="url(#fShadow)"/>
-<circle cx="-58" cy="-20" r="19" fill="#14532d"/>
-<g transform="translate(-58 -20) scale(1.15)">
+<!-- Front side of Visiting Card -->
+<g transform="translate(238 144) rotate(4)">
+<rect x="-93" y="-54" width="186" height="110" rx="7" fill="#a8a29e"/>
+<rect x="-95" y="-57" width="186" height="110" rx="7" fill="url(#gCream)" filter="url(#fShadow)"/>
+<rect x="-95" y="-57" width="8" height="110" rx="3" fill="#15803d"/>
+<circle cx="-62" cy="-24" r="18" fill="#14532d"/>
+<g transform="translate(-62 -24) scale(1.1)">
 <path d="M0-13C11-10 12 6 0 13C-12 6-11-10 0-13Z" fill="#ffffff"/>
 <path d="M0-9V12" stroke="#14532d" stroke-width="1.2" stroke-linecap="round"/>
 </g>
-<text x="-34" y="-18" font-size="12" font-weight="800" fill="#14532d">HILL & LEAF</text>
-<text x="-34" y="-7" font-size="7" font-weight="700" letter-spacing="3" fill="#65a30d">TEA CO.</text>
-<rect x="-70" y="8" width="140" height="1.2" fill="#bbf7d0"/>
-<text x="-70" y="25" font-size="10" font-weight="700" fill="#0f172a">Anita Roy</text>
-<text x="-70" y="35" font-size="7" fill="#475569">Founder & Tea Blender</text>
-<text x="-70" y="45" font-size="7" font-weight="600" fill="#15803d">Udaipur, Tripura</text>
-</g>
-
-<!-- Staff ID card with lanyard -->
-<g transform="translate(324 126) rotate(5)">
-<rect x="-9" y="-134" width="18" height="92" fill="#15803d"/>
-<rect x="-9" y="-46" width="18" height="12" rx="2" fill="url(#gMetal)"/>
-<rect x="-6" y="-44" width="12" height="4" rx="2" fill="#0f172a"/>
-<rect x="-41" y="-36" width="82" height="118" rx="7" fill="url(#gCream)" filter="url(#fShadow)"/>
-<rect x="-41" y="-36" width="82" height="24" rx="7" fill="#14532d"/>
-<rect x="-41" y="-22" width="82" height="10" fill="#14532d"/>
-<circle cx="-28" cy="-24" r="8" fill="#ffffff"/>
-<g transform="translate(-28 -24) scale(0.55)">
-<path d="M0-13C11-10 12 6 0 13C-12 6-11-10 0-13Z" fill="#14532d"/>
-</g>
-<text x="-16" y="-22" font-size="6.5" font-weight="800" fill="#ffffff">HILL & LEAF</text>
-<circle cx="0" cy="8" r="17" fill="#d1fae5" stroke="#15803d" stroke-width="1.5"/>
-<circle cx="0" cy="3" r="6" fill="#475569"/>
-<path d="M-11 24Q-11 13 0 13Q11 13 11 24Z" fill="#475569"/>
-<g text-anchor="middle">
-<text y="40" font-size="9" font-weight="800" fill="#0f172a">ARJUN DAS</text>
-<text y="50" font-size="6.5" fill="#475569">Estate Manager</text>
-<text y="60" font-size="6.5" font-weight="700" fill="#15803d">ID: HL-0427</text>
-</g>
-<path d="M-28 66v10M-22.5 66v10M-16 66v10M-10 66v10M-3 66v10M3.5 66v10M9 66v10M16 66v10M23 66v10" stroke="#0f172a" stroke-width="1.2"/>
-<path d="M-25 66v10M-19 66v10M-12.5 66v10M-6 66v10M0 66v10M6 66v10M13 66v10M19.5 66v10M26 66v10" stroke="#0f172a" stroke-width="2.4"/>
+<text x="-36" y="-22" font-size="12" font-weight="800" fill="#14532d">HILL &amp; LEAF</text>
+<text x="-36" y="-11" font-size="7" font-weight="700" letter-spacing="2.5" fill="#65a30d">WHOLESALE &amp; RETAIL</text>
+<rect x="-74" y="2" width="148" height="1.2" fill="#bbf7d0"/>
+<text x="-74" y="18" font-size="10.5" font-weight="800" fill="#0f172a">Anita Roy</text>
+<text x="-74" y="28" font-size="7" font-weight="600" fill="#475569">Managing Partner</text>
+<text x="-74" y="41" font-size="7" font-weight="700" fill="#15803d">📞 +91 98620 XXXXX  •  📍 Udaipur, Tripura</text>
+<!-- QR Code on Card -->
+<rect x="46" y="10" width="30" height="30" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+<path d="M50 14h8v8h-8zM64 14h8v8h-8zM50 28h8v8h-8zM62 26h4v4h-4zM68 30h4v6h-4z" fill="#0f172a"/>
 </g>
 </svg>
 </div>
 <div class="work-meta">
-<span>Branding</span>
-<h3>Logo, Visiting & ID Cards</h3>
+<div class="work-head"><span class="work-cat">Logos & Cards</span><em class="work-badge">Print Mockup</em></div>
+<h3>Double-Sided Visiting Card</h3>
+<p class="work-desc">300 DPI print-ready business card layout with QR code & matte/gloss finish.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Visiting%20Card%20Design%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
 </div>
 </article>
 
-<!-- 4. Business website -->
-<article class="work-card" style="--i: 3" data-pcat="websites" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open sample designs gallery: Business website">
+<!-- 7. ID Card & Lanyard Design -->
+<article class="work-card" style="--i: 6" data-pcat="branding" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: ID Card and Lanyard Design">
 <div class="work-thumb">
-<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Responsive cafe website shown on a laptop and a phone">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PVC student and staff ID cards with printed neck lanyard mockup">
+<rect width="400" height="250" fill="url(#gBgB)"/>
+<ellipse cx="200" cy="232" rx="130" ry="7" fill="#000" opacity="0.4"/>
+<!-- Back ID Card (Reverse Side Rules & Emergency Info) -->
+<g transform="translate(138 134) rotate(-6)">
+<rect x="-48" y="-68" width="96" height="136" rx="8" fill="url(#gCream)" filter="url(#fShadow)"/>
+<rect x="-48" y="-68" width="96" height="18" rx="8" fill="#1e3a8a"/>
+<text y="-56" text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">TERMS &amp; EMERGENCY INFO</text>
+<text x="-38" y="-36" font-size="6" font-weight="700" fill="#0f172a">Blood Group: O+</text>
+<text x="-38" y="-25" font-size="6" font-weight="600" fill="#475569">Emergency: +91 94360 XXXXX</text>
+<text x="-38" y="-14" font-size="6" font-weight="600" fill="#475569">Valid Upto: March 2027</text>
+<rect x="-38" y="-4" width="76" height="1" fill="#cbd5e1"/>
+<text y="12" text-anchor="middle" font-size="5.8" fill="#64748b">If found, please return to:</text>
+<text y="22" text-anchor="middle" font-size="6.5" font-weight="800" fill="#1e3a8a">GOMATI PUBLIC SCHOOL</text>
+<text y="31" text-anchor="middle" font-size="5.8" fill="#475569">Chanban, Udaipur, Tripura</text>
+<!-- Barcode -->
+<path d="M-30 44v12M-25 44v12M-21 44v12M-15 44v12M-10 44v12M-4 44v12M2 44v12M7 44v12M13 44v12M19 44v12M24 44v12M29 44v12" stroke="#0f172a" stroke-width="1.8"/>
+</g>
+<!-- Front ID Card with Lanyard & Metal Clip -->
+<g transform="translate(248 128) rotate(4)">
+<path d="M-18 -135 L-6 -64 L6 -64 L18 -135" fill="none" stroke="#1d4ed8" stroke-width="12"/>
+<rect x="-11" y="-66" width="22" height="14" rx="2" fill="url(#gMetal)"/>
+<rect x="-7" y="-63" width="14" height="4" rx="2" fill="#0f172a"/>
+<rect x="-52" y="-54" width="104" height="148" rx="8" fill="url(#gCream)" filter="url(#fShadow)"/>
+<path d="M-52 -46 a8 8 0 0 1 8 -8 h88 a8 8 0 0 1 8 8 v28 h-104 z" fill="#1d4ed8"/>
+<text y="-35" text-anchor="middle" font-size="8" font-weight="800" fill="#ffffff">GOMATI PUBLIC SCHOOL</text>
+<text y="-25" text-anchor="middle" font-size="5.8" font-weight="700" fill="#fde047">UDAIPUR • TRIPURA</text>
+<!-- Photo Avatar -->
+<circle cx="0" cy="4" r="21" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+<circle cx="0" cy="-2" r="7.5" fill="#334155"/>
+<path d="M-14 22 Q-14 9 0 9 Q14 9 14 22 Z" fill="#334155"/>
+<rect x="-30" y="29" width="60" height="12" rx="6" fill="#f59e0b"/>
+<text y="37.5" text-anchor="middle" font-size="6.8" font-weight="800" fill="#0f172a">STUDENT ID</text>
+<text y="53" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0f172a">ROHAN DEBNATH</text>
+<text y="64" text-anchor="middle" font-size="7" font-weight="700" fill="#475569">Class: X (Sec A)  •  Roll: 14</text>
+<text y="75" text-anchor="middle" font-size="7" font-weight="800" fill="#1d4ed8">ID No: GPS-2026-104</text>
+<rect x="-52" y="84" width="104" height="10" fill="#1e3a8a"/>
+</g>
+</svg>
+</div>
+<div class="work-meta">
+<div class="work-head"><span class="work-cat">Logos & Cards</span><em class="work-badge">Print Mockup</em></div>
+<h3>ID Card & Lanyard Layout</h3>
+<p class="work-desc">Front & back PVC ID card and custom ribbon lanyard for schools, clubs & offices.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20an%20ID%20Card%20%26%20Lanyard%20Design%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
+</div>
+</article>
+
+<!-- 8. Sample Website Homepage -->
+<article class="work-card" style="--i: 7" data-pcat="websites" data-open-modal role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open mockup: Sample Website Homepage">
+<div class="work-thumb">
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Responsive business website shown on laptop and mobile phone">
 <rect width="400" height="250" fill="url(#gBgD)"/>
 <ellipse cx="190" cy="202" rx="175" ry="8" fill="#000" opacity="0.4"/>
-
 <!-- Laptop -->
 <g transform="translate(-22 0)">
 <polygon points="46,176 344,176 358,189 32,189" fill="url(#gMetal)"/>
@@ -1065,7 +1354,7 @@ Chanban, Udaipur, Gomati, Tripura
 <rect x="77" y="33" width="236" height="136" rx="3" fill="#fff7ed"/>
 <rect x="77" y="33" width="236" height="17" fill="#ffffff"/>
 <circle cx="88" cy="41.5" r="4.5" fill="#b45309"/>
-<text x="96" y="44.5" font-size="7.5" font-weight="800" fill="#451a03">Bloom & Brew</text>
+<text x="96" y="44.5" font-size="7.5" font-weight="800" fill="#451a03">Bloom &amp; Brew</text>
 <g font-size="5.5" font-weight="600" fill="#78350f">
 <text x="235" y="44">Menu</text>
 <text x="258" y="44">About</text>
@@ -1101,12 +1390,11 @@ Chanban, Udaipur, Gomati, Tripura
 <text x="246" y="159">₹120</text>
 </g>
 </g>
-
 <!-- Phone -->
 <rect x="322" y="84" width="58" height="116" rx="10" fill="#0b1220" stroke="#64748b" stroke-width="1.5" filter="url(#fShadow)"/>
 <rect x="326" y="89" width="50" height="106" rx="6" fill="#fff7ed"/>
 <rect x="342" y="91" width="18" height="3" rx="1.5" fill="#0b1220"/>
-<text x="330" y="105" font-size="6" font-weight="800" fill="#451a03">Bloom & Brew</text>
+<text x="330" y="105" font-size="6" font-weight="800" fill="#451a03">Bloom &amp; Brew</text>
 <rect x="330" y="110" width="42" height="46" rx="3" fill="url(#gHeroBrown)"/>
 <text x="334" y="124" font-size="9" font-weight="800" fill="#ffffff">Fresh</text>
 <text x="334" y="134" font-size="9" font-weight="800" fill="#fde68a">Coffee.</text>
@@ -1123,10 +1411,13 @@ Chanban, Udaipur, Gomati, Tripura
 </svg>
 </div>
 <div class="work-meta">
-<span>Websites</span>
-<h3>Responsive Business Website</h3>
+<div class="work-head"><span class="work-cat">Websites</span><em class="work-badge">Live Demo</em></div>
+<h3>Business Website Homepage</h3>
+<p class="work-desc">Fast, mobile-friendly website with WhatsApp ordering, SEO & Google Maps.</p>
+<a class="work-cta" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20want%20a%20Business%20Website%20like%20your%20portfolio%20sample." target="_blank" rel="noopener noreferrer">Request Similar →</a>
 </div>
 </article>
+
 </div>
 </section>
 
@@ -1192,13 +1483,14 @@ Visit us: Chanban, Udaipur, Gomati, Tripura
 <span id="toastMsg">Opening WhatsApp with your order details...</span>
 </div>
 
-<a class="fab" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20need%20a%20design%20quote." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
+<!-- Compact Floating WhatsApp Button (Auto-hides over Order Form & Contact Banner) -->
+<a class="fab" id="waFab" href="https://wa.me/918730074910?text=Hi%20Digital%20Creative%20Zone%2C%20I%20need%20a%20design%20quote." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
 
-<!-- Sample Designs Viewer -->
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Sample designs" tabindex="-1">
+<!-- Portfolio Mockup Viewer Modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Portfolio mockups" tabindex="-1">
 <div class="modal-box">
 <div class="bar">
-<h2 id="modalTitle">Sample Designs</h2>
+<h2 id="modalTitle">Portfolio &amp; Print Mockups</h2>
 <span class="count" id="vCount"></span>
 <button type="button" class="x" id="xBtn" aria-label="Close samples">✕</button>
 </div>
@@ -1304,8 +1596,48 @@ const modalEl = document.getElementById('modal');
 const sampBtn = document.getElementById('sampBtn');
 const xBtn = document.getElementById('xBtn');
 const portfolioGrid = document.getElementById('portfolioGrid');
+const menuBtn = document.getElementById('menuBtn');
+const mobileNav = document.getElementById('mobileNav');
+const waFab = document.getElementById('waFab');
 
 document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* Mobile Quick-Jump Menu Toggle */
+menuBtn.addEventListener('click', function () {
+const isOpen = mobileNav.classList.toggle('open');
+menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+menuBtn.textContent = isOpen ? '✕' : '☰';
+});
+mobileNav.addEventListener('click', function (e) {
+if (e.target.closest('a')) {
+mobileNav.classList.remove('open');
+menuBtn.setAttribute('aria-expanded', 'false');
+menuBtn.textContent = '☰';
+}
+});
+
+/* Auto-hide Floating WhatsApp Button when user interacts with Order Form or views Contact Banner */
+let formFocused = false, zoneVisible = false;
+function updateFabVisibility() {
+if (!waFab) return;
+waFab.classList.toggle('fab-hidden', formFocused || zoneVisible);
+}
+const orderSec = document.getElementById('order');
+const contactSec = document.getElementById('contact');
+if (orderSec) {
+orderSec.addEventListener('focusin', function () { formFocused = true; updateFabVisibility(); });
+orderSec.addEventListener('focusout', function () { setTimeout(function () { formFocused = orderSec.contains(document.activeElement); updateFabVisibility(); }, 150); });
+}
+if ('IntersectionObserver' in window) {
+const visMap = new Map();
+const obs = new IntersectionObserver(function (entries) {
+entries.forEach(function (en) { visMap.set(en.target, en.isIntersecting); });
+zoneVisible = Boolean(visMap.get(orderSec) || visMap.get(contactSec));
+updateFabVisibility();
+}, { threshold: 0.25 });
+if (orderSec) obs.observe(orderSec);
+if (contactSec) obs.observe(contactSec);
+}
 
 function esc(s) {
 return String(s).replace(/[&<>"']/g, function (c) {
@@ -1426,24 +1758,26 @@ const HI_SVC = [
 
 const BN_UI = [
 ['#pkTitle', 'প্যাকেজ ডিল'], ['#pkSub', 'একসাথে কয়েকটি সার্ভিস নিয়ে সাশ্রয় করুন।'], ['#faqTitle', 'সাধারণ প্রশ্নোত্তর'],
-['.nav-links a[href="#services"]', 'দামের তালিকা'], ['.nav-links a[href="#portfolio"]', 'নমুনা কাজ'],
-['.nav-links a[href="#contact"]', 'যোগাযোগ'], ['.nav-cta', 'কোটেশন নিন'],
+['.nav-links a[href="#services"]', 'দামের তালিকা'], ['.nav-links a[href="#portfolio"]', 'পোর্টফোলিও'],
+['.nav-links a[href="#order"]', 'কাস্টম অর্ডার'], ['.nav-links a[href="#contact"]', 'যোগাযোগ'], ['.nav-cta', 'কোটেশন নিন'],
+['.mobile-nav a[href="#services"]', 'দামের তালিকা'], ['.mobile-nav a[href="#portfolio"]', 'পোর্টফোলিও'],
+['.mobile-nav a[href="#order"]', 'কাস্টম অর্ডার'], ['.mobile-nav a[href="#visit"]', 'আমাদের দোকান'], ['.mobile-nav a[href="#contact"]', 'যোগাযোগ'],
 ['h1', 'পেশাদার <b>ডিজাইন সার্ভিস</b>', 1],
 ['.sub', 'মানসম্মত ডিজাইন | সাশ্রয়ী দাম। প্রিন্ট-রেডি ব্যানার, ব্র্যান্ডিং, সোশ্যাল মিডিয়া গ্রাফিক্স ও ওয়েবসাইট।'],
-['#sampBtn', 'নমুনা ডিজাইন দেখুন'], ['.btn-secondary', 'দামের তালিকা দেখুন'],
+['#sampBtn', 'পোর্টফোলিও মকআপ দেখুন'], ['.btn-secondary', 'দামের তালিকা দেখুন'],
 ['#services-title', 'স্বচ্ছ দামের তালিকা'],
 ['#services .section-head p', 'ক্যাটাগরি বেছে নিন, বা যেকোনো সার্ভিসে "জানুন" চেপে হোয়াটসঅ্যাপে কোটেশন চান।'],
-['.tab[data-f="all"]', 'সব'], ['.tab[data-f="design"]', 'পোস্টার ও ব্যানার'], ['.tab[data-f="social"]', 'সোশ্যাল'],
+['.tab[data-f="all"]', 'সব'], ['.tab[data-f="design"]', 'পোস্টার ও ব্যানার'], ['.tab[data-f="social"]', 'সোশ্যাল মিডিয়া'],
 ['.tab[data-f="brand"]', 'ব্র্যান্ডিং'], ['.tab[data-f="web"]', 'ওয়েবসাইট'],
 ['.note', 'প্রস্তাবিত দাম। চূড়ান্ত দাম ডিজাইনের মান, জটিলতা ও আপনার প্রয়োজনের উপর নির্ভর করবে।'],
-['#portfolio-title', 'নমুনা ডিজাইন'],
-['#portfolio .section-head p', 'কাল্পনিক ব্র্যান্ডের কনসেপ্ট নমুনা: ব্যানার, পোস্টার, ব্র্যান্ডিং ও ওয়েবসাইট।'],
-['.tab[data-pf="all"]', 'সব'], ['.tab[data-pf="banners"]', 'পোস্টার ও ব্যানার'],
-['.tab[data-pf="branding"]', 'ব্র্যান্ডিং'], ['.tab[data-pf="websites"]', 'ওয়েবসাইট'],
+['#portfolio-title', 'পোর্টফোলিও ও প্রিন্ট মকআপ'],
+['#portfolio .section-head p', 'স্থানীয় দোকান, কোচিং সেন্টার ও ব্যবসার জন্য তৈরি ডিজাইন এবং প্রিন্ট মকআপ—যাতে আপনি কাজের মান সহজেই বুঝতে পারেন।'],
+['.tab[data-pf="all"]', 'সব (৮)'], ['.tab[data-pf="banners"]', 'পোস্টার ও ব্যানার'],
+['.tab[data-pf="social"]', 'সোশ্যাল বিজ্ঞাপন'], ['.tab[data-pf="branding"]', 'লোগো ও কার্ড'], ['.tab[data-pf="websites"]', 'ওয়েবসাইট'],
 ['#oTitle', 'কাস্টম অর্ডার'], ['#oSub', 'তথ্য পূরণ করুন, সব এক মেসেজে আমাদের হোয়াটসঅ্যাপে পৌঁছে যাবে।'],
 ['#lName', 'আপনার নাম'], ['#lSvc', 'সার্ভিস'], ['#lDate', 'ডেডলাইন'], ['#oSend', 'হোয়াটসঅ্যাপে পাঠান'],
 ['#visit-title', 'আমাদের দোকানে আসুন'], ['#hrsTitle', 'খোলার সময়'],
-['#modalTitle', 'নমুনা ডিজাইন'], ['.tag-badge', 'আইডিয়া • ডিজাইন • ইমপ্যাক্ট'],
+['#modalTitle', 'পোর্টফোলিও ও প্রিন্ট মকআপ'], ['.tag-badge', 'আইডিয়া • ডিজাইন • ইমপ্যাক্ট'],
 ['.stat-box:nth-child(1) strong', 'দ্রুত'], ['.stat-box:nth-child(1) span', '২৪–৪৮ ঘণ্টায় ডেলিভারি'],
 ['.stat-box:nth-child(2) strong', 'এইচডি প্রিন্ট'], ['.stat-box:nth-child(2) span', 'CMYK ও ওয়েব-রেডি'],
 ['.loc-link', 'চানবান, উদয়পুর, গোমতী, ত্রিপুরা'],
@@ -1459,24 +1793,26 @@ const BN_UI = [
 
 const HI_UI = [
 ['#pkTitle', 'पैकेज डील्स'], ['#pkSub', 'एक साथ कई सेवाएं लें और बचत करें।'], ['#faqTitle', 'अक्सर पूछे जाने वाले प्रश्न'],
-['.nav-links a[href="#services"]', 'मूल्य सूची'], ['.nav-links a[href="#portfolio"]', 'सैंपल डिज़ाइन'],
-['.nav-links a[href="#contact"]', 'संपर्क करें'], ['.nav-cta', 'कोटेशन लें'],
+['.nav-links a[href="#services"]', 'मूल्य सूची'], ['.nav-links a[href="#portfolio"]', 'पोर्टफोलियो'],
+['.nav-links a[href="#order"]', 'कस्टम ऑर्डर'], ['.nav-links a[href="#contact"]', 'संपर्क करें'], ['.nav-cta', 'कोटेशन लें'],
+['.mobile-nav a[href="#services"]', 'मूल्य सूची'], ['.mobile-nav a[href="#portfolio"]', 'पोर्टफोलियो'],
+['.mobile-nav a[href="#order"]', 'कस्टम ऑर्डर'], ['.mobile-nav a[href="#visit"]', 'हमारी दुकान'], ['.mobile-nav a[href="#contact"]', 'संपर्क करें'],
 ['h1', 'प्रोफेशनल <b>डिज़ाइन सेवाएं</b>', 1],
 ['.sub', 'बेहतरीन डिज़ाइन | किफायती दाम। प्रिंट-रेडी बैनर, ब्रांडिंग, सोशल मीडिया ग्राफिक्स और वेबसाइट।'],
-['#sampBtn', 'सैंपल डिज़ाइन देखें'], ['.btn-secondary', 'मूल्य सूची देखें'],
+['#sampBtn', 'पोर्टफोलियो मॉकअप देखें'], ['.btn-secondary', 'मूल्य सूची देखें'],
 ['#services-title', 'पारदर्शी मूल्य सूची'],
 ['#services .section-head p', 'कैटेगरी चुनें या किसी भी सेवा पर "पूछताछ करें" दबाकर व्हाट्सएप पर कोटेशन पाएं।'],
-['.tab[data-f="all"]', 'सभी'], ['.tab[data-f="design"]', 'पोस्टर और बैनर'], ['.tab[data-f="social"]', 'सोशल'],
+['.tab[data-f="all"]', 'सभी'], ['.tab[data-f="design"]', 'पोस्टर और बैनर'], ['.tab[data-f="social"]', 'सोशल मीडिया'],
 ['.tab[data-f="brand"]', 'ब्रांडिंग'], ['.tab[data-f="web"]', 'वेबसाइट'],
 ['.note', 'सुझाए गए दाम। अंतिम कीमत डिज़ाइन की क्वालिटी, जटिलता और आपकी आवश्यकता पर निर्भर करेगी।'],
-['#portfolio-title', 'सैंपल डिज़ाइन'],
-['#portfolio .section-head p', 'काल्पनिक ब्रांड्स के लिए सैंपल: बैनर, पोस्टर, ब्रांडिंग और वेबसाइट।'],
-['.tab[data-pf="all"]', 'सभी'], ['.tab[data-pf="banners"]', 'पोस्टर और बैनर'],
-['.tab[data-pf="branding"]', 'ब्रांडिंग'], ['.tab[data-pf="websites"]', 'वेबसाइट'],
+['#portfolio-title', 'पोर्टफोलियो और प्रिंट मॉकअप'],
+['#portfolio .section-head p', 'स्थानीय दुकानों, कोचिंग संस्थानों और व्यवसायों के लिए डिज़ाइन व प्रिंट मॉकअप—देखें कि आपका डिज़ाइन छपने पर कैसा दिखेगा।'],
+['.tab[data-pf="all"]', 'सभी (8)'], ['.tab[data-pf="banners"]', 'पोस्टर और बैनर'],
+['.tab[data-pf="social"]', 'सोशल विज्ञापन'], ['.tab[data-pf="branding"]', 'लोगो और कार्ड'], ['.tab[data-pf="websites"]', 'वेबसाइट'],
 ['#oTitle', 'कस्टम ऑर्डर'], ['#oSub', 'विवरण भरें, सब कुछ एक मैसेज में हमारे व्हाट्सएप पर पहुंच जाएगा।'],
 ['#lName', 'आपका नाम'], ['#lSvc', 'सेवा'], ['#lDate', 'डेडलाइन'], ['#oSend', 'व्हाट्सएप पर भेजें'],
 ['#visit-title', 'हमारी दुकान पर आएं'], ['#hrsTitle', 'खुलने का समय'],
-['#modalTitle', 'सैंपल डिज़ाइन'], ['.tag-badge', 'आइडिया • डिज़ाइन • इम्पैक्ट'],
+['#modalTitle', 'पोर्टफोलियो और प्रिंट मॉकअप'], ['.tag-badge', 'आइडिया • डिज़ाइन • इम्पैक्ट'],
 ['.stat-box:nth-child(1) strong', 'तेज़'], ['.stat-box:nth-child(1) span', '24–48 घंटे में डिलीवरी'],
 ['.stat-box:nth-child(2) strong', 'एचडी प्रिंट'], ['.stat-box:nth-child(2) span', 'CMYK और वेब-रेडी'],
 ['.loc-link', 'चानबान, उदयपुर, गोमती, त्रिपुरा'],
@@ -1490,8 +1826,28 @@ const HI_UI = [
 ['.contact-banner .btn-wa-large', 'व्हाट्सएप पर चैट करें'], ['#installBtn', 'ऐप इंस्टॉल करें']
 ];
 
-const BN_WORK = [['পোস্টার ও ব্যানার', 'উৎসবের ফ্লেক্স ব্যানার'], ['পোস্টার ও ব্যানার', 'ইভেন্ট ও ভর্তির পোস্টার'], ['ব্র্যান্ডিং', 'লোগো, ভিজিটিং ও আইডি কার্ড'], ['ওয়েবসাইট', 'রেসপন্সিভ ব্যবসায়িক ওয়েবসাইট']];
-const HI_WORK = [['पोस्टर और बैनर', 'त्योहार फ्लेक्स बैनर'], ['पोस्टर और बैनर', 'इवेंट और एडमिशन पोस्टर'], ['ब्रांडिंग', 'लोगो, विज़िटिंग और आईडी कार्ड'], ['वेबसाइट', 'रेस्पॉन्सिव बिज़नेस वेबसाइट']];
+/* 8 Portfolio items: [Category, Badge, Title, Description, CTA] */
+const BN_WORK = [
+['পোস্টার ও ব্যানার', 'ক্লায়েন্ট রেডি', 'দোকানের বিজ্ঞাপনের ব্যানার', 'স্থানীয় দোকানের সাইনবোর্ড ও প্রিন্ট-রেডি CMYK হোর্ডিং।', 'একই রকম অর্ডার করুন →'],
+['পোস্টার ও ব্যানার', 'প্রিন্ট মকআপ', 'উৎসবের ফ্লেক্স ব্যানার', 'পূজা ও উৎসবের অফারের জন্য প্রিন্ট-রেডি ফ্লেক্স ব্যানার মকআপ।', 'একই রকম অর্ডার করুন →'],
+['পোস্টার ও ব্যানার', 'ক্লায়েন্ট রেডি', 'কোচিং সেন্টার ভর্তি পোস্টার', 'টিউশন ও কোচিং সেন্টারের জন্য আকর্ষণীয় A3/A4 ভর্তি পোস্টার।', 'একই রকম অর্ডার করুন →'],
+['সোশ্যাল মিডিয়া', 'অ্যাড মকআপ', 'সোশ্যাল মিডিয়া বিজ্ঞাপন', 'ইনস্টাগ্রাম ও ফেসবুকের জন্য ১০৮০×১০৮০ প্রমোশনাল গ্রাফিক্স।', 'একই রকম অর্ডার করুন →'],
+['লোগো ও কার্ড', 'ব্র্যান্ড কনসেপ্ট', 'পেশাদার লোগো ডিজাইন', 'কালার প্যালেট, ডার্ক/লাইট মোড ও ভেক্টর সোর্স ফাইলসহ লোগো।', 'একই রকম অর্ডার করুন →'],
+['লোগো ও কার্ড', 'প্রিন্ট মকআপ', 'ডাবল-সাইডেড ভিজিটিং কার্ড', 'QR কোডসহ ৩০০ DPI প্রিন্ট-রেডি বিজনেস কার্ড ডিজাইন।', 'একই রকম অর্ডার করুন →'],
+['লোগো ও কার্ড', 'প্রিন্ট মকআপ', 'আইডি কার্ড ও ল্যানইয়ার্ড', 'স্কুল, ক্লাব ও অফিসের জন্য উভয় পাশের PVC আইডি কার্ড ও ফিতা।', 'একই রকম অর্ডার করুন →'],
+['ওয়েবসাইট', 'লাইভ ডেমো', 'ব্যবসায়িক ওয়েবসাইট হোমপেজ', 'হোয়াটসঅ্যাপ অর্ডার, এসইও ও গুগল ম্যাপসহ মোবাইল-ফ্রেন্ডলি ওয়েবসাইট।', 'একই রকম অর্ডার করুন →']
+];
+
+const HI_WORK = [
+['पोस्टर और बैनर', 'क्लाइंट रेडी', 'लोकल शॉप विज्ञापन बैनर', 'दुकान के लिए आउटडोर साइनबोर्ड और प्रिंट-रेडी CMYK होर्डिंग।', 'ऐसा डिज़ाइन बनवाएं →'],
+['पोस्टर और बैनर', 'प्रिंट मॉकअप', 'त्योहार फ्लेक्स बैनर', 'पूजा और त्योहार ऑफर्स के लिए हैंगिंग फ्लेक्स बैनर मॉकअप।', 'ऐसा डिज़ाइन बनवाएं →'],
+['पोस्टर और बैनर', 'क्लाइंट रेडी', 'कोचिंग एडमिशन पोस्टर', 'कोचिंग और ट्यूशन सेंटर के लिए आकर्षक A3/A4 एडमिशन पोस्टर।', 'ऐसा डिज़ाइन बनवाएं →'],
+['सोशल मीडिया', 'ऐड मॉकअप', 'सोशल मीडिया विज्ञापन', 'इंस्टाग्राम और फेसबुक के लिए 1080×1080 प्रमोशनल विज्ञापन।', 'ऐसा डिज़ाइन बनवाएं →'],
+['लोगो और कार्ड', 'ब्रांड कॉन्सेप्ट', 'प्रोफेशनल लोगो डिज़ाइन', 'कलर पैलेट, लाइट/डार्क मोड और वेक्टर सोर्स फाइलों के साथ लोगो।', 'ऐसा डिज़ाइन बनवाएं →'],
+['लोगो और कार्ड', 'प्रिंट मॉकअप', 'डबल-साइडेड विज़िटिंग कार्ड', 'QR कोड के साथ 300 DPI प्रिंट-रेडी बिज़नेस कार्ड लेआउट।', 'ऐसा डिज़ाइन बनवाएं →'],
+['लोगो और कार्ड', 'प्रिंट मॉकअप', 'आईडी कार्ड और लैनयार्ड', 'स्कूल, क्लब और ऑफिस के लिए PVC आईडी कार्ड और रिबन लैनयार्ड।', 'ऐसा डिज़ाइन बनवाएं →'],
+['वेबसाइट', 'लाइव डेमो', 'बिज़नेस वेबसाइट होमपेज', 'व्हाट्सएप ऑर्डर, एसईओ और गूगल मैप्स के साथ मोबाइल-फ्रेंडली वेबसाइट।', 'ऐसा डिज़ाइन बनवाएं →']
+];
 
 const orig = new Map();
 function txtNode(el) {
@@ -1547,10 +1903,16 @@ if (l !== 'en' || listEl.dataset.js || !listEl.querySelector('.item')) renderSer
 fillSelect(); renderHours(); renderExtras(); showRepeat();
 document.getElementById('yr').textContent = new Date().getFullYear();
 document.querySelectorAll('.work-meta').forEach(function (m) {
-const i = Array.prototype.indexOf.call(m.parentNode.parentNode.children, m.parentNode), s = m.querySelector('span'), t = m.querySelector('h3');
-if (!m._o) m._o = [s.textContent, t.textContent];
-s.textContent = l === 'bn' ? BN_WORK[i][0] : (l === 'hi' ? HI_WORK[i][0] : m._o[0]);
-t.textContent = l === 'bn' ? BN_WORK[i][1] : (l === 'hi' ? HI_WORK[i][1] : m._o[1]);
+const i = Array.prototype.indexOf.call(m.parentNode.parentNode.children, m.parentNode);
+const cat = m.querySelector('.work-cat'), bdg = m.querySelector('.work-badge'), t = m.querySelector('h3'), d = m.querySelector('.work-desc'), cta = m.querySelector('.work-cta');
+if (!m._o) m._o = [cat ? cat.textContent : '', bdg ? bdg.textContent : '', t ? t.textContent : '', d ? d.textContent : '', cta ? cta.textContent : ''];
+const tr = l === 'bn' ? BN_WORK[i] : (l === 'hi' ? HI_WORK[i] : m._o);
+if (!tr) return;
+if (cat) cat.textContent = tr[0];
+if (bdg) bdg.textContent = tr[1];
+if (t) t.textContent = tr[2];
+if (d) d.textContent = tr[3];
+if (cta) cta.textContent = tr[4];
 });
 document.getElementById('langBtn').textContent = l === 'en' ? 'বাংলা' : (l === 'bn' ? 'हिंदी' : 'EN');
 if (save) { try { localStorage.setItem('dcz-lang', l); } catch (e) {} }
@@ -1666,6 +2028,7 @@ sampBtn.addEventListener('click', function () { openModal(0); });
 xBtn.addEventListener('click', closeModal);
 modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closeModal(); });
 portfolioGrid.addEventListener('click', function (e) {
+if (e.target.closest('.work-cta')) return;
 const c = e.target.closest('[data-open-modal]');
 if (c) {
 const allCards = Array.from(portfolioGrid.querySelectorAll('.work-card'));
@@ -1746,7 +2109,7 @@ renderServices(); fillSelect(); renderHours(); renderExtras(); showRepeat();
 }
 
 let saved = null;
-try { saved = localStorage.setItem('dcz-lang'); } catch (e) {}
+try { saved = localStorage.getItem('dcz-lang'); } catch (e) {}
 applyLang((saved === 'bn' || saved === 'hi') ? saved : 'en');
 loadConfig();
 </script>

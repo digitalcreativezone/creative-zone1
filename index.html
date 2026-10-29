@@ -159,8 +159,8 @@ transform: translateY(0);
 }
 
 .item, .work-card, .pkg {
-opacity: 1;
-animation: fadeInUp 0.35s ease backwards;
+opacity: 0;
+animation: fadeInUp 0.35s ease forwards;
 animation-delay: calc(var(--i, 0) * 45ms);
 }
 
@@ -235,7 +235,7 @@ stroke-linecap: round; stroke-linejoin: round;
 }
 
 /* Compact Mobile Navigation Drawer */
-.icon-btn.menu-toggle { display: none; }
+.menu-toggle { display: none; }
 .mobile-nav {
 display: none;
 border-top: 1px solid var(--border);
@@ -833,7 +833,7 @@ html[data-theme=light] .toast{background:rgba(255,255,255,.95);color:#0f172a}
 .nav-inner { padding: 9px 14px; }
 .nav-links { gap: 6px; }
 .nav-links a:not(.nav-cta) { display: none; }
-.icon-btn.menu-toggle { display: inline-flex; }
+.menu-toggle { display: inline-flex; }
 .brand-logo { width: 34px; height: 34px; }
 }
 @media (max-width: 520px) {
@@ -1583,7 +1583,7 @@ desc: 'Custom pages, WhatsApp integration, SEO & Google Maps',
 p1: '₹4,999',
 p2: 'up to ₹12,000',
 color: '#3b82f6',
-icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/>'
 }
 ];
 
@@ -1904,4 +1904,214 @@ fillSelect(); renderHours(); renderExtras(); showRepeat();
 document.getElementById('yr').textContent = new Date().getFullYear();
 document.querySelectorAll('.work-meta').forEach(function (m) {
 const i = Array.prototype.indexOf.call(m.parentNode.parentNode.children, m.parentNode);
-const cat = m.querySelector('.work-cat'), bdg = m.querySelector('.work-badge'), t = m.querySelector('h3'), d = m.querySelector('.work-desc'), cta = m.querySelector('.w
+const cat = m.querySelector('.work-cat'), bdg = m.querySelector('.work-badge'), t = m.querySelector('h3'), d = m.querySelector('.work-desc'), cta = m.querySelector('.work-cta');
+if (!m._o) m._o = [cat ? cat.textContent : '', bdg ? bdg.textContent : '', t ? t.textContent : '', d ? d.textContent : '', cta ? cta.textContent : ''];
+const tr = l === 'bn' ? BN_WORK[i] : (l === 'hi' ? HI_WORK[i] : m._o);
+if (!tr) return;
+if (cat) cat.textContent = tr[0];
+if (bdg) bdg.textContent = tr[1];
+if (t) t.textContent = tr[2];
+if (d) d.textContent = tr[3];
+if (cta) cta.textContent = tr[4];
+});
+document.getElementById('langBtn').textContent = l === 'en' ? 'বাংলা' : (l === 'bn' ? 'हिंदी' : 'EN');
+if (save) { try { localStorage.setItem('dcz-lang', l); } catch (e) {} }
+}
+document.getElementById('langBtn').addEventListener('click', function () {
+const nextLang = lang === 'en' ? 'bn' : (lang === 'bn' ? 'hi' : 'en');
+applyLang(nextLang, true);
+});
+
+/* Theme Switcher */
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(t, save) {
+document.documentElement.dataset.theme = t;
+document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
+themeBtn.textContent = t === 'light' ? '☾' : '☀';
+if (save) { try { localStorage.setItem('dcz-theme', t); } catch (e) {} }
+}
+themeBtn.addEventListener('click', function () {
+const current = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+applyTheme(current, true);
+});
+applyTheme(document.documentElement.dataset.theme || 'dark');
+
+function localDate() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+document.getElementById('oDate').min = localDate();
+document.getElementById('oDate').addEventListener('click', function () { try { if (this.showPicker) this.showPicker(); } catch (e) {} });
+
+function openWA(msg) {
+const a = document.createElement('a');
+a.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+a.target = '_blank'; a.rel = 'noopener noreferrer';
+document.body.appendChild(a); a.click(); a.remove();
+}
+
+function triggerWhatsAppWithToast(msg) {
+showToast(
+lang === 'bn' ? 'আপনার অর্ডারের তথ্যসহ হোয়াটসঅ্যাপ খোলা হচ্ছে...' :
+(lang === 'hi' ? 'आपके ऑर्डर विवरण के साथ व्हाट्सएप खोला जा रहा है...' : 'Opening WhatsApp with your order details...')
+);
+setTimeout(function () {
+openWA(msg);
+}, 850);
+}
+
+function buildMsg(o) {
+const it = SERVICES[o.svc];
+return ["Hi Digital Creative Zone, I'd like to place an order.",
+'Name: ' + o.name,
+'Service: ' + it.name + ' (' + priceRange(it) + ')',
+'Size: ' + (o.size || 'Not sure / please suggest'),
+'Quantity: ' + o.qty,
+'Print needed: ' + (o.print === 'yes' ? 'Yes' : 'No (design file only)'),
+'Deadline: ' + (o.date || 'Flexible')].join('\n');
+}
+function getLast() { try { return JSON.parse(localStorage.getItem('dcz-last')); } catch (e) { return null; } }
+function showRepeat() {
+const o = getLast(), b = document.getElementById('repeatBtn');
+if (!o || !SERVICES[o.svc]) { b.hidden = true; return; }
+b.hidden = false;
+const repeatLabel = lang === 'bn'
+? 'আগের অর্ডারটি আবার পাঠান: ' + BN_SVC[o.svc][0]
+: (lang === 'hi' ? 'पिछला ऑर्डर फिर से भेजें: ' + HI_SVC[o.svc][0] : 'Send the same order again: ' + SERVICES[o.svc].name);
+b.textContent = repeatLabel + ' × ' + o.qty;
+}
+document.getElementById('orderForm').addEventListener('submit', function (e) {
+e.preventDefault();
+const o = {
+name: document.getElementById('oName').value.trim(),
+svc: +document.getElementById('oService').value,
+size: document.getElementById('oSize').value.trim(),
+qty: Math.max(1, parseInt(document.getElementById('oQty').value, 10) || 1),
+print: document.getElementById('oPrint').value,
+date: document.getElementById('oDate').value
+};
+if (!o.name || !SERVICES[o.svc]) { document.getElementById('oName').focus(); return; }
+try { localStorage.setItem('dcz-last', JSON.stringify({ name: o.name, svc: o.svc, size: o.size, qty: o.qty, print: o.print })); } catch (e2) {}
+showRepeat();
+triggerWhatsAppWithToast(buildMsg(o));
+});
+document.getElementById('repeatBtn').addEventListener('click', function () {
+const o = getLast(); if (!o) return;
+o.date = '';
+triggerWhatsAppWithToast(buildMsg(o) + '\n(Repeat order: please confirm the deadline with me)');
+});
+(function () {
+const o = getLast();
+if (o) { document.getElementById('oName').value = o.name || ''; document.getElementById('oSize').value = o.size || ''; document.getElementById('oQty').value = o.qty || 1; }
+})();
+
+const total = viewer.children.length;
+function cur() { return Math.round(viewer.scrollLeft / viewer.clientWidth) || 0; }
+function go(i) { viewer.scrollTo({ left: Math.max(0, Math.min(total - 1, i)) * viewer.clientWidth, behavior: 'smooth' }); }
+viewer.addEventListener('scroll', function () { vCount.textContent = (cur() + 1) + ' / ' + total; });
+document.getElementById('vPrev').addEventListener('click', function () { go(cur() - 1); });
+document.getElementById('vNext').addEventListener('click', function () { go(cur() + 1); });
+
+let lastFocused = null;
+function openModal(i) {
+lastFocused = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : sampBtn;
+modalEl.classList.add('open');
+document.body.style.overflow = 'hidden';
+viewer.scrollLeft = (i || 0) * viewer.clientWidth;
+vCount.textContent = ((i || 0) + 1) + ' / ' + total;
+xBtn.focus();
+}
+function closeModal() {
+if (!modalEl.classList.contains('open')) return;
+modalEl.classList.remove('open');
+document.body.style.overflow = '';
+(lastFocused && document.contains(lastFocused) ? lastFocused : sampBtn).focus();
+}
+sampBtn.addEventListener('click', function () { openModal(0); });
+xBtn.addEventListener('click', closeModal);
+modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closeModal(); });
+portfolioGrid.addEventListener('click', function (e) {
+if (e.target.closest('.work-cta')) return;
+const c = e.target.closest('[data-open-modal]');
+if (c) {
+const allCards = Array.from(portfolioGrid.querySelectorAll('.work-card'));
+openModal(allCards.indexOf(c));
+}
+});
+portfolioGrid.addEventListener('keydown', function (e) {
+const c = e.target.closest('[data-open-modal]');
+if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openModal(Array.prototype.indexOf.call(portfolioGrid.children, c)); }
+});
+document.addEventListener('keydown', function (e) {
+if (!modalEl.classList.contains('open')) return;
+if (e.key === 'Escape') closeModal();
+if (e.key === 'ArrowLeft') go(cur() - 1);
+if (e.key === 'ArrowRight') go(cur() + 1);
+});
+
+let installEvt = null;
+const installBtn = document.getElementById('installBtn'), installHelp = document.getElementById('installHelp');
+window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEvt = e; });
+window.addEventListener('appinstalled', function () { installBtn.hidden = true; installHelp.hidden = true; });
+if ((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone) installBtn.hidden = true;
+installBtn.addEventListener('click', function () {
+if (installEvt) { installEvt.prompt(); installEvt = null; return; }
+const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), bn = lang === 'bn', hi = lang === 'hi';
+installHelp.textContent = ios
+? (bn ? 'আইফোনে: Share বাটন চেপে "Add to Home Screen" বেছে নিন।' : (hi ? 'iPhone/iPad पर: Share बटन दबाएं, फिर "Add to Home Screen" चुनें।' : 'On iPhone/iPad: tap the Share button, then "Add to Home Screen".'))
+: (bn ? 'ব্রাউজারের মেনু (⋮) খুলে "Install app" বা "Add to Home screen" বেছে নিন।' : (hi ? 'अपने ब्राउज़र मेनू (⋮) को खोलें और "Install app" या "Add to Home screen" चुनें।' : 'Open your browser menu (⋮) and choose "Install app" or "Add to Home screen".'));
+installHelp.hidden = false;
+});
+
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+
+let cfg = null, offerClosed = false;
+function safeLink(u) { return /^(https?:\/\/|#|\/)/.test(u || '') ? u : ''; }
+function renderExtras() {
+if (!cfg) return;
+const bn = lang === 'bn', hi = lang === 'hi', t = function (en, b, h) { return bn && b ? b : (hi && h ? h : en); };
+const b = cfg.banner || {}, txt = t(b.en, b.bn, b.hi), bar = document.getElementById('offerBar'), lk = safeLink(b.link);
+bar.hidden = !(b.on && txt) || offerClosed;
+bar.innerHTML = (lk ? '<a href="' + esc(lk) + '">' + esc(txt) + '</a>' : '<span>' + esc(txt) + '</span>') + '<button type="button" id="offerX" aria-label="Close offer">✕</button>';
+const pk = cfg.packages || [];
+document.getElementById('packages').hidden = !pk.length;
+document.getElementById('pkgList').innerHTML = pk.map(function (p, idx) {
+const msg = encodeURIComponent("Hi Digital Creative Zone, I'd like the \"" + p.name + "\" package (" + p.price + ").");
+const ordTxt = bn ? 'অর্ডার করুন →' : (hi ? 'पैकेज ऑर्डर करें →' : 'Order package →');
+return '<article class="pkg" style="--i: ' + idx + '"><h3>' + esc(t(p.name, p.bn, p.hi)) + '</h3><p>' + esc(t(p.desc, p.descBn, p.descHi)) + '</p>' +
+'<div class="pp"><strong>' + esc(p.price) + '</strong>' + (p.was ? '<s>' + esc(p.was) + '</s>' : '') + '</div>' +
+'<a class="item-quote" href="https://wa.me/' + WA_NUMBER + '?text=' + msg + '" target="_blank" rel="noopener noreferrer" aria-label="Order ' + esc(p.name) + ' package on WhatsApp">' + ordTxt + '</a></article>';
+}).join('');
+const fq = cfg.faq || [];
+document.getElementById('faq').hidden = !fq.length;
+document.getElementById('faqList').innerHTML = fq.map(function (x) {
+return '<details><summary>' + esc(t(x.q, x.qBn, x.qHi)) + '</summary><p>' + esc(t(x.a, x.aBn, x.aHi)) + '</p></details>';
+}).join('');
+}
+document.addEventListener('click', function (e) {
+if (e.target.closest('#offerX')) { offerClosed = true; document.getElementById('offerBar').hidden = true; }
+});
+function loadConfig() {
+if (!window.fetch) return;
+fetch('config.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+if (!c) return;
+cfg = c;
+if (/^\d{8,15}$/.test(c.wa || '')) {
+WA_NUMBER = c.wa;
+document.querySelectorAll('a[href*="wa.me/"]').forEach(function (a) { a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + c.wa); });
+document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+a.href = 'tel:+' + c.wa; a.textContent = c.wa.indexOf('91') === 0 ? '+91 ' + c.wa.slice(2) : '+' + c.wa;
+});
+}
+if (Array.isArray(c.hours) && c.hours.length) { HOURS.length = 0; c.hours.forEach(function (r) { HOURS.push(r); }); }
+if (Array.isArray(c.prices)) c.prices.forEach(function (p, i) { if (SERVICES[i] && p && p.p1) { SERVICES[i].p1 = p.p1; if (p.p2) SERVICES[i].p2 = p.p2; } });
+renderServices(); fillSelect(); renderHours(); renderExtras(); showRepeat();
+}).catch(function () {});
+}
+
+let saved = null;
+try { saved = localStorage.getItem('dcz-lang'); } catch (e) {}
+applyLang((saved === 'bn' || saved === 'hi') ? saved : 'en');
+loadConfig();
+</script>
+</body>
+</html>

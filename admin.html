@@ -544,7 +544,7 @@ const P = {
     cfg.services.map((s, i) => {
       const meta = CAT_META[s.cat] || CAT_META.design;
       return '<div class="c">' +
-        '<div class="t"><b><span class="cat-dot" style="background:' + esc(s.color || meta.color) + '"></span>' + (i + 1) + '. ' + esc(s.name || 'New Service') + '</b>' + tools('services', i) + '</div>' +
+        '<div class="t"><b><span class="cat-dot" style="background:' + esc(s.color || meta.color) + '"></span><span data-svc-title="' + i + '">' + (i + 1) + '. ' + esc(s.name || 'New Service') + '</span></b>' + tools('services', i) + '</div>' +
         '<div class="g">' +
           '<div>' + inp('services.' + i + '.name', 'Service Name (English)') + '</div>' +
           '<div>' + inp('services.' + i + '.bnName', 'Service Name (Bengali / বাংলা)') + '</div>' +
@@ -597,15 +597,15 @@ function load(c) {
     if (Array.isArray(c.services) && c.services.length) {
       cfg.services = c.services.map((s, idx) => {
         const meta = CAT_META[s.cat] || CAT_META.design;
-        const defSvc = DEFAULT_SERVICES[idx] || {};
+        const defSvc = DEFAULT_SERVICES.find(d => d.name === s.name) || DEFAULT_SERVICES[idx] || {};
         return {
           cat: s.cat || 'design',
           name: s.name || '',
-          bnName: s.bnName || defSvc.bnName || '',
-          hiName: s.hiName || defSvc.hiName || '',
+          bnName: s.bnName ?? defSvc.bnName ?? '',
+          hiName: s.hiName ?? defSvc.hiName ?? '',
           desc: s.desc || '',
-          bnDesc: s.bnDesc || defSvc.bnDesc || '',
-          hiDesc: s.hiDesc || defSvc.hiDesc || '',
+          bnDesc: s.bnDesc ?? defSvc.bnDesc ?? '',
+          hiDesc: s.hiDesc ?? defSvc.hiDesc ?? '',
           p1: s.p1 || '',
           p2: (s.p2 || '').replace(/^up to\s*/i, ''),
           color: s.color || meta.color,
@@ -709,7 +709,7 @@ function buildOfferSchema(c) {
         }
       };
     })
-  });
+  }).replace(/<\//g, '<\\/');
 }
 function buildStaticCardsHTML(c) {
   return c.services.map((item, n) => {
@@ -731,8 +731,8 @@ async function syncIndexHtmlSEO(c, repo, br, H) {
   const data = await r.json();
   let html = fromB64(data.content);
   const updatedHtml = html
-    .replace(/(<script type="application\/ld\+json" id="ld-offers">)[\s\S]*?(<\/script>)/, '$1' + buildOfferSchema(c) + '$2')
-    .replace(/(<!--SERVICES:START-->)[\s\S]*?(<!--SERVICES:END-->)/, '$1' + buildStaticCardsHTML(c) + '$2');
+    .replace(/(<script type="application\/ld\+json" id="ld-offers">)[\s\S]*?(<\/script>)/, (_, p1, p2) => p1 + buildOfferSchema(c) + p2)
+    .replace(/(<!--SERVICES:START-->)[\s\S]*?(<!--SERVICES:END-->)/, (_, p1, p2) => p1 + buildStaticCardsHTML(c) + p2);
   if (updatedHtml === html) return true;
   const putRes = await fetch(indexUrl, {
     method: 'PUT',
@@ -797,6 +797,12 @@ document.addEventListener('input', e => {
   if (t.dataset.p) {
     const val = t.type === 'checkbox' ? t.checked : t.value;
     set(t.dataset.p, val);
+    // Live-update service card header title while typing without losing focus
+    if (/^services\.\d+\.name$/.test(t.dataset.p)) {
+      const idx = +t.dataset.p.split('.')[1];
+      const titleEl = document.querySelector('[data-svc-title="' + idx + '"]');
+      if (titleEl) titleEl.textContent = (idx + 1) + '. ' + (val || 'New Service');
+    }
     // If service category changed, update its default accent color & icon automatically
     if (/^services\.\d+\.cat$/.test(t.dataset.p)) {
       const idx = +t.dataset.p.split('.')[1];
@@ -888,7 +894,7 @@ $('#dl').addEventListener('click', () => {
   a.href = URL.createObjectURL(new Blob([JSON.stringify(c, null, 2) + '\n'], { type: 'application/json' }));
   a.download = 'config.json';
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   say('Downloaded config.json!');
 });
 

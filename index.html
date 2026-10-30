@@ -2402,6 +2402,43 @@ document.addEventListener('visibilitychange', function () {
 if (!muted) play();
 updateUI();
 
+/* Performance: smoother swiping in the popup viewer */
+var pcss =
+  /* shine: move with transform (GPU) instead of animating "left" (layout) */
+  '@keyframes dczShineT{0%{transform:translate3d(-160%,0,0) skewX(-18deg)}55%,100%{transform:translate3d(460%,0,0) skewX(-18deg)}}' +
+  '.dcz-fx::before{left:0;transform:translate3d(-160%,0,0) skewX(-18deg);animation:dczShineT 4.2s ease-in-out infinite}' +
+  /* glow: fade a fixed shadow (GPU) instead of animating box-shadow (repaint) */
+  '@keyframes dczGlowO{0%,100%{opacity:0}50%{opacity:1}}' +
+  '.dcz-fx::after{box-shadow:inset 0 0 26px 2px rgba(251,191,36,.38);opacity:0;animation:dczGlowO 2.2s ease-in-out infinite}' +
+  /* lighter bulb glow */
+  '.dcz-bulb{box-shadow:0 0 8px 2px var(--bc)}' +
+  /* no extra GPU layer per big slide */
+  '.slide .work-thumb svg{will-change:auto}' +
+  /* while the popup is open, freeze the cards behind it; while swiping, freeze the popup too */
+  'body.dcz-modal #portfolioGrid .work-thumb svg,body.dcz-modal #portfolioGrid .dcz-fx,body.dcz-modal #portfolioGrid .dcz-fx *,body.dcz-modal #portfolioGrid .dcz-fx::before,body.dcz-modal #portfolioGrid .dcz-fx::after,' +
+  '.viewer.dcz-swiping .work-thumb svg,.viewer.dcz-swiping .dcz-fx,.viewer.dcz-swiping .dcz-fx *,.viewer.dcz-swiping .dcz-fx::before,.viewer.dcz-swiping .dcz-fx::after{animation-play-state:paused!important}' +
+  /* the popup background is already ~90% opaque: skip the costly live blur */
+  '.modal{-webkit-backdrop-filter:none;backdrop-filter:none}';
+var ps = document.createElement('style');
+ps.id = 'dcz-perf-css';
+ps.textContent = pcss;
+document.head.appendChild(ps);
+
+var mdl = document.getElementById('modal'), vw = document.getElementById('viewer');
+if (mdl && 'MutationObserver' in window) {
+  var syncModal = function () { document.body.classList.toggle('dcz-modal', mdl.classList.contains('open')); };
+  new MutationObserver(syncModal).observe(mdl, { attributes: true, attributeFilter: ['class'] });
+  syncModal();
+}
+if (vw) {
+  var swTimer = null;
+  vw.addEventListener('scroll', function () {
+    if (!vw.classList.contains('dcz-swiping')) vw.classList.add('dcz-swiping');
+    clearTimeout(swTimer);
+    swTimer = setTimeout(function () { vw.classList.remove('dcz-swiping'); }, 140);
+  }, { passive: true });
+}
+
 /* Fix: keep the speaker button label in the chosen language */
 var lb = document.getElementById('langBtn');
 if (lb) lb.addEventListener('click', function () { setTimeout(updateUI, 0); });

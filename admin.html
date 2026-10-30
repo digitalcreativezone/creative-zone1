@@ -168,6 +168,48 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
 .t b { font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; }
 .t span { display: flex; gap: 6px; }
 
+/* Visitor Analytics Stat Cards */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.stat-card {
+  background: var(--inp);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-card span {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mu);
+}
+.stat-card strong {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--tx);
+  line-height: 1.15;
+}
+.stat-card small {
+  font-size: 0.75rem;
+  color: var(--mu);
+}
+.stat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
 .cat-dot {
   width: 10px;
   height: 10px;
@@ -353,6 +395,8 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 // ==========================================
 // DEFAULT ADMIN PASSWORD
 const DEFAULT_PASS = 'dcz@2026';
+// COUNTER API NAMESPACE FOR VISITOR ANALYTICS
+const STATS_NS = 'dcz_udaipur_2026';
 // ==========================================
 
 const $ = s => document.querySelector(s),
@@ -463,6 +507,8 @@ const TABS = [
 ];
 
 let cfg = clone(DEF), tab = 'gen', dirty = false;
+let vStats = { unique: '…', views: '…', wa: '…' };
+
 const get = p => p.split('.').reduce((o, k) => o[k], cfg);
 const set = (p, v) => { const a = p.split('.'), l = a.pop(); a.reduce((o, k) => o[k], cfg)[l] = v; };
 const ls = () => {
@@ -473,6 +519,39 @@ const ls = () => {
   } catch (e) { return {}; }
 };
 const sv = o => { try { localStorage.setItem('dcz-admin', JSON.stringify(Object.assign(ls(), o))); } catch (e) {} };
+
+/* Fetch Live Visitor Analytics from CounterAPI */
+async function fetchOneStat(key) {
+  try {
+    const r = await fetch('https://api.counterapi.dev/v1/' + STATS_NS + '/' + key + '/', { cache: 'no-store' });
+    if (!r.ok) return 0;
+    const d = await r.json();
+    return typeof d.count === 'number' ? d.count : 0;
+  } catch (_) {
+    return 0;
+  }
+}
+
+async function loadVisitorStats(showMsg) {
+  const btn = $('#refreshStats');
+  if (btn) { btn.disabled = true; btn.textContent = 'Refreshing…'; }
+  const [u, v, w] = await Promise.all([
+    fetchOneStat('unique_visitors'),
+    fetchOneStat('total_views'),
+    fetchOneStat('wa_clicks')
+  ]);
+  vStats = {
+    unique: u.toLocaleString('en-IN'),
+    views: v.toLocaleString('en-IN'),
+    wa: w.toLocaleString('en-IN')
+  };
+  const uEl = $('#stUnique'), vEl = $('#stViews'), wEl = $('#stWa');
+  if (uEl) uEl.textContent = vStats.unique;
+  if (vEl) vEl.textContent = vStats.views;
+  if (wEl) wEl.textContent = vStats.wa;
+  if (btn) { btn.disabled = false; btn.textContent = '↻ Refresh stats'; }
+  if (showMsg) say('Visitor stats updated!');
+}
 
 /* Theme Switcher */
 const themeBtn = $('#themeBtn');
@@ -507,6 +586,7 @@ function getExpectedPass() { const s = ls(); return s.pass || DEFAULT_PASS; }
 function checkAuth() {
   if (sessionStorage.getItem('dcz-unlocked') === '1') {
     $('#lockScreen').hidden = true;
+    try { localStorage.setItem('dcz-is-admin', '1'); } catch (e) {}
   } else {
     $('#lockScreen').hidden = false;
     setTimeout(() => $('#pwInput').focus(), 50);
@@ -516,10 +596,12 @@ $('#lockForm').addEventListener('submit', e => {
   e.preventDefault();
   if ($('#pwInput').value === getExpectedPass()) {
     sessionStorage.setItem('dcz-unlocked', '1');
+    try { localStorage.setItem('dcz-is-admin', '1'); } catch (err) {}
     $('#pwInput').value = '';
     $('#lockErr').style.display = 'none';
     $('#lockScreen').hidden = true;
     say('Welcome back! Admin panel unlocked.');
+    loadVisitorStats();
   } else {
     $('#lockErr').style.display = 'block';
     $('#pwInput').select();
@@ -538,7 +620,18 @@ const addBtn = (l, t) => '<button type="button" data-a="add" data-l="' + l + '">
 const empty = (l, t) => '<div class="c"><p class="h">Nothing here yet. The section stays hidden on your site until you add something.</p><div class="row">' + addBtn(l, 'Add ' + t) + '<button type="button" data-a="ex" data-l="' + l + '">Insert draft examples</button></div></div>';
 
 const P = {
-  gen: () => '<div class="c"><h2>WhatsApp number</h2>' + inp('wa', 'Country code + number, digits only') + '<p class="h">Changes every WhatsApp and call button on the site.</p></div><div class="c"><h2>Opening hours</h2>' + cfg.hours.map((r, i) => '<div class="g"><div>' + inp('hours.' + i + '.0', 'Days') + '</div><div>' + inp('hours.' + i + '.1', 'Time') + '</div></div><div class="t" style="border:0;margin-top:6px"><span></span>' + tools('hours', i) + '</div>').join('') + '<p class="h">Standard days (Mon – Sat, Sunday, Closed) auto-translate in Bengali &amp; Hindi.</p><div class="row">' + addBtn('hours', 'Add row') + '</div></div>',
+  gen: () =>
+    '<div class="c">' +
+      '<div class="t"><b>📊 Live Website Visitor Analytics</b><button type="button" class="ic" id="refreshStats">↻ Refresh stats</button></div>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-card"><span><i class="stat-dot" style="background:#10b981"></i>Unique Visitors</span><strong id="stUnique">' + esc(vStats.unique) + '</strong><small>Individual devices / people</small></div>' +
+        '<div class="stat-card"><span><i class="stat-dot" style="background:#3b82f6"></i>Total Page Views</span><strong id="stViews">' + esc(vStats.views) + '</strong><small>All page loads &amp; refreshes</small></div>' +
+        '<div class="stat-card"><span><i class="stat-dot" style="background:#f59e0b"></i>WhatsApp Clicks</span><strong id="stWa">' + esc(vStats.wa) + '</strong><small>Quote &amp; order enquiries</small></div>' +
+      '</div>' +
+      '<p class="h">Your own visits from this browser are automatically excluded so only real customer visits are counted.</p>' +
+    '</div>' +
+    '<div class="c"><h2>WhatsApp number</h2>' + inp('wa', 'Country code + number, digits only') + '<p class="h">Changes every WhatsApp and call button on the site.</p></div>' +
+    '<div class="c"><h2>Opening hours</h2>' + cfg.hours.map((r, i) => '<div class="g"><div>' + inp('hours.' + i + '.0', 'Days') + '</div><div>' + inp('hours.' + i + '.1', 'Time') + '</div></div><div class="t" style="border:0;margin-top:6px"><span></span>' + tools('hours', i) + '</div>').join('') + '<p class="h">Standard days (Mon – Sat, Sunday, Closed) auto-translate in Bengali &amp; Hindi.</p><div class="row">' + addBtn('hours', 'Add row') + '</div></div>',
 
   svc: () => '<div class="c"><h2>Manage Services &amp; Prices (EN / বাংলা / हिंदी)</h2><p class="h">Add, reorder, or edit services in English, Bengali, and Hindi. If Bengali or Hindi is left blank, it automatically falls back to English.</p><div class="row">' + addBtn('services', 'Add new service') + '<button type="button" id="resetSvc">Reset to default 9 services</button></div></div>' +
     cfg.services.map((s, i) => {
@@ -825,6 +918,9 @@ document.addEventListener('input', e => {
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-t]');
   if (t) { tab = t.dataset.t; return render(); }
+  if (e.target.id === 'refreshStats') {
+    return loadVisitorStats(true);
+  }
   const b = e.target.closest('[data-a]');
   if (b) {
     const a = b.dataset.a, A = cfg[b.dataset.l], n = +b.dataset.i;
@@ -903,6 +999,7 @@ window.addEventListener('beforeunload', e => {
 });
 
 render();
+loadVisitorStats();
 fromSite().then(c => { if (c && !dirty) { load(c); dirty = false; st(); } });
 </script>
 </body>

@@ -684,7 +684,7 @@ color: var(--text);
 font-size: 0.95rem;
 cursor: pointer;
 }
-.x:hover { background: rgba(255, 255, 255, 0.15); }
+.x:hover { background: rgba(255, 255, 255, 255, 0.15); }
 
 /* Animated Success Toast Notification */
 .toast {
@@ -1583,7 +1583,7 @@ desc: 'Custom pages, WhatsApp integration, SEO & Google Maps',
 p1: '₹4,999',
 p2: 'up to ₹12,000',
 color: '#3b82f6',
-icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/>'
+icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
 }
 ];
 
@@ -1672,8 +1672,8 @@ const bn = lang === 'bn', hi = lang === 'hi';
 listEl.dataset.js = 1;
 listEl.innerHTML = SERVICES.map(function (item, n) {
 const waText = encodeURIComponent("Hi Digital Creative Zone, I'd like a quote for " + item.name + " (" + priceRange(item) + ").");
-const svcName = bn ? BN_SVC[n][0] : (hi ? HI_SVC[n][0] : item.name);
-const svcDesc = bn ? BN_SVC[n][1] : (hi ? HI_SVC[n][1] : item.desc);
+const svcName = bn ? (BN_SVC[n] ? BN_SVC[n][0] : item.name) : (hi ? (HI_SVC[n] ? HI_SVC[n][0] : item.name) : item.name);
+const svcDesc = bn ? (BN_SVC[n] ? BN_SVC[n][1] : item.desc) : (hi ? (HI_SVC[n] ? HI_SVC[n][1] : item.desc) : item.desc);
 const fromTxt = bn ? 'শুরু' : (hi ? 'शुरुआती कीमत' : 'Starting from');
 const p2Txt = bn ? item.p2.replace('up to ', 'সর্বোচ্চ ') : (hi ? item.p2.replace('up to ', 'अधिकतम ') : item.p2);
 const btnTxt = bn ? 'জানুন →' : (hi ? 'पूछताछ करें →' : 'Enquire →');
@@ -1859,7 +1859,7 @@ const s = document.getElementById('oService'), cur = s.value;
 const chooseTxt = lang === 'bn' ? 'সার্ভিস বেছে নিন' : (lang === 'hi' ? 'सेवा चुनें' : 'Choose a service');
 s.innerHTML = '<option value="" disabled selected>' + chooseTxt + '</option>' +
 SERVICES.map(function (it, i) {
-const nm = lang === 'bn' ? BN_SVC[i][0] : (lang === 'hi' ? HI_SVC[i][0] : it.name);
+const nm = lang === 'bn' ? (BN_SVC[i] ? BN_SVC[i][0] : it.name) : (lang === 'hi' ? (HI_SVC[i] ? HI_SVC[i][0] : it.name) : it.name);
 return '<option value="' + i + '">' + esc(nm) + '</option>';
 }).join('');
 if (cur) s.value = cur;
@@ -1973,8 +1973,8 @@ const o = getLast(), b = document.getElementById('repeatBtn');
 if (!o || !SERVICES[o.svc]) { b.hidden = true; return; }
 b.hidden = false;
 const repeatLabel = lang === 'bn'
-? 'আগের অর্ডারটি আবার পাঠান: ' + BN_SVC[o.svc][0]
-: (lang === 'hi' ? 'पिछला ऑर्डर फिर से भेजें: ' + HI_SVC[o.svc][0] : 'Send the same order again: ' + SERVICES[o.svc].name);
+? 'আগের অর্ডারটি আবার পাঠান: ' + (BN_SVC[o.svc] ? BN_SVC[o.svc][0] : SERVICES[o.svc].name)
+: (lang === 'hi' ? 'पिछला ऑर्डर फिर से भेजें: ' + (HI_SVC[o.svc] ? HI_SVC[o.svc][0] : SERVICES[o.svc].name) : 'Send the same order again: ' + SERVICES[o.svc].name);
 b.textContent = repeatLabel + ' × ' + o.qty;
 }
 document.getElementById('orderForm').addEventListener('submit', function (e) {
@@ -2103,7 +2103,16 @@ a.href = 'tel:+' + c.wa; a.textContent = c.wa.indexOf('91') === 0 ? '+91 ' + c.w
 });
 }
 if (Array.isArray(c.hours) && c.hours.length) { HOURS.length = 0; c.hours.forEach(function (r) { HOURS.push(r); }); }
-if (Array.isArray(c.prices)) c.prices.forEach(function (p, i) { if (SERVICES[i] && p && p.p1) { SERVICES[i].p1 = p.p1; if (p.p2) SERVICES[i].p2 = p.p2; } });
+if (Array.isArray(c.services) && c.services.length) {
+SERVICES.length = 0; BN_SVC.length = 0; HI_SVC.length = 0;
+c.services.forEach(function (s) {
+SERVICES.push(s);
+BN_SVC.push([s.bnName || s.name, s.bnDesc || s.desc]);
+HI_SVC.push([s.hiName || s.name, s.hiDesc || s.desc]);
+});
+} else if (Array.isArray(c.prices)) {
+c.prices.forEach(function (p, i) { if (SERVICES[i] && p && p.p1) { SERVICES[i].p1 = p.p1; if (p.p2) SERVICES[i].p2 = p.p2; } });
+}
 renderServices(); fillSelect(); renderHours(); renderExtras(); showRepeat();
 }).catch(function () {});
 }
@@ -2114,7 +2123,7 @@ applyLang((saved === 'bn' || saved === 'hi') ? saved : 'en');
 loadConfig();
 </script>
 
-<!-- ===== DCZ ADD-ON: animated samples, background music, mute button ===== -->
+<!-- ===== DCZ ADD-ON: animated samples, background music, mute button & live visitor tracker ===== -->
 <script id="dcz-addon">
 (function () {
 'use strict';
@@ -2467,6 +2476,25 @@ var pg = document.getElementById('portfolioGrid');
 if (pg) pg.addEventListener('keydown', function (e) {
   if (e.target.closest && e.target.closest('.work-cta')) e.stopPropagation();
 }, true);
+
+/* ---------- 5. Live Visitor Tracker (Syncs with Admin Panel) ---------- */
+var NS = 'dcz_tripura_2026';
+var BASE = 'https://api.counterapi.dev/v1/' + NS + '/';
+try {
+  /* Skip counting if you unlocked the Admin Panel on this browser (and kept exclusion enabled) */
+  if (localStorage.getItem('dcz-is-admin') !== '1') {
+    /* Count 1 Page View per browser session */
+    if (!sessionStorage.getItem('dcz-viewed')) {
+      sessionStorage.setItem('dcz-viewed', '1');
+      fetch(BASE + 'views/up').catch(function () {});
+    }
+    /* Count 1 Unique Visitor per device/browser */
+    if (!localStorage.getItem('dcz-uniq')) {
+      localStorage.setItem('dcz-uniq', '1');
+      fetch(BASE + 'unique/up').catch(function () {});
+    }
+  }
+} catch (e) {}
 
 })();
 </script>

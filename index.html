@@ -2402,6 +2402,16 @@ document.addEventListener('visibilitychange', function () {
 if (!muted) play();
 updateUI();
 
+/* Fix: keep the speaker button label in the chosen language */
+var lb = document.getElementById('langBtn');
+if (lb) lb.addEventListener('click', function () { setTimeout(updateUI, 0); });
+
+/* Fix: Enter/Space on a "Request Similar" link must follow the link, not open the popup */
+var pg = document.getElementById('portfolioGrid');
+if (pg) pg.addEventListener('keydown', function (e) {
+  if (e.target.closest && e.target.closest('.work-cta')) e.stopPropagation();
+}, true);
+
 })();
 </script>
 </body>

@@ -2169,6 +2169,10 @@ function rnd(a, b) { return a + Math.random() * (b - a); }
 var LIGHT = ['#fde047', '#f472b6', '#38bdf8', '#4ade80', '#fb923c', '#ffffff'];
 var CONF = ['#fde047', '#f472b6', '#38bdf8', '#4ade80', '#fb923c', '#a78bfa', '#ef4444', '#ffffff'];
 var EMO = ['🎉', '✨', '🎊', '⭐', '🎈', '💫'];
+/* phones & low-end devices get a lighter (still animated) version */
+var LITE = (navigator.hardwareConcurrency || 8) <= 6 || (navigator.deviceMemory || 8) <= 4 ||
+  !!(window.matchMedia && matchMedia('(pointer:coarse)').matches);
+if (LITE) document.documentElement.classList.add('dcz-lite');
 
 function buildFx(thumb) {
   if (thumb.querySelector('.dcz-fx')) return;
@@ -2178,22 +2182,23 @@ function buildFx(thumb) {
   var h = '', i, n = 0;
   /* marquee bulbs around the border, chasing each other */
   var pts = [];
-  for (i = 0; i < 6; i++) pts.push([8 + i * 16.8, 5]);
-  for (i = 0; i < 6; i++) pts.push([8 + i * 16.8, 95]);
-  for (i = 1; i < 3; i++) { pts.push([3, 5 + i * 30]); pts.push([97, 5 + i * 30]); }
+  var nb = LITE ? 4 : 6, gap = 84 / (nb - 1);
+  for (i = 0; i < nb; i++) pts.push([8 + i * gap, 5]);
+  for (i = 0; i < nb; i++) pts.push([8 + i * gap, 95]);
+  if (!LITE) for (i = 1; i < 3; i++) { pts.push([3, 5 + i * 30]); pts.push([97, 5 + i * 30]); }
   pts.forEach(function (p, k) {
     h += '<i class="dcz-bulb" style="left:' + p[0] + '%;top:' + p[1] + '%;--bc:' + LIGHT[k % LIGHT.length] + ';--bd:1.2s;--bdl:' + ((k % 4) * 0.3).toFixed(2) + 's"></i>';
   });
   /* sparkles */
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < (LITE ? 2 : 5); i++) {
     h += '<span class="dcz-spark" style="left:' + rnd(8, 88).toFixed(0) + '%;top:' + rnd(10, 80).toFixed(0) + '%;--ss:' + rnd(10, 18).toFixed(0) + 'px;--sd:' + rnd(1.6, 3).toFixed(1) + 's;--sdl:' + rnd(0, 2.5).toFixed(1) + 's">✦</span>';
   }
   /* confetti */
-  for (i = 0; i < 12; i++) {
+  for (i = 0; i < (LITE ? 5 : 12); i++) {
     h += '<b class="dcz-conf" style="--x:' + rnd(2, 96).toFixed(0) + '%;--c:' + CONF[i % CONF.length] + ';--d:' + rnd(3, 5.5).toFixed(1) + 's;--dl:' + rnd(0, 4).toFixed(1) + 's;--sx:' + rnd(-30, 30).toFixed(0) + 'px"></b>';
   }
   /* rising emoji */
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < (LITE ? 1 : 4); i++) {
     h += '<span class="dcz-float" style="--x:' + rnd(6, 90).toFixed(0) + '%;--fs:' + rnd(12, 18).toFixed(0) + 'px;--d:' + rnd(4, 6.5).toFixed(1) + 's;--dl:' + rnd(0, 5).toFixed(1) + 's;--sx:' + rnd(-26, 26).toFixed(0) + 'px">' + EMO[(i + n++) % EMO.length] + '</span>';
   }
   fx.innerHTML = h;
@@ -2286,7 +2291,7 @@ function playStep(s, t) {
   tone(mtof(ch[ARP[e]] + 12), t, STEP * 1.6, 'triangle', 0.06, 0.01, pluck);
   var mn = MEL[bar][e];
   if (mn) tone(mtof(mn), t, STEP * 2.2, 'sine', 0.085, 0.02, pluck);
-  if (e % 2 === 1) hat(t);
+  if (e % 2 === 1 && !LITE) hat(t);
 }
 
 var pluck = null;
@@ -2308,7 +2313,7 @@ function ensureCtx() {
   /* light echo for the plucks */
   pluck = ctx.createGain(); pluck.gain.value = 1;
   var dl = ctx.createDelay(1), fb = ctx.createGain(), wet = ctx.createGain();
-  dl.delayTime.value = 0.3; fb.gain.value = 0.3; wet.gain.value = 0.35;
+  dl.delayTime.value = 0.3; fb.gain.value = 0.3; wet.gain.value = LITE ? 0 : 0.35;
   pluck.connect(bus); pluck.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(bus);
   var len = Math.floor(ctx.sampleRate * 0.06);
   noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
@@ -2418,11 +2423,25 @@ var pcss =
   'body.dcz-modal #portfolioGrid .work-thumb svg,body.dcz-modal #portfolioGrid .dcz-fx,body.dcz-modal #portfolioGrid .dcz-fx *,body.dcz-modal #portfolioGrid .dcz-fx::before,body.dcz-modal #portfolioGrid .dcz-fx::after,' +
   '.viewer.dcz-swiping .work-thumb svg,.viewer.dcz-swiping .dcz-fx,.viewer.dcz-swiping .dcz-fx *,.viewer.dcz-swiping .dcz-fx::before,.viewer.dcz-swiping .dcz-fx::after{animation-play-state:paused!important}' +
   /* the popup background is already ~90% opaque: skip the costly live blur */
-  '.modal{-webkit-backdrop-filter:none;backdrop-filter:none}';
+  '.modal{-webkit-backdrop-filter:none;backdrop-filter:none}' +
+  /* live blur behind a moving page is very costly: drop it (backgrounds are already ~90% opaque) */
+  '.navbar,.hero-card,.toast,.fab-mute{-webkit-backdrop-filter:none;backdrop-filter:none}' +
+  '.navbar{background:rgba(7,11,20,.96)}html[data-theme=light] .navbar{background:rgba(248,250,252,.97)}' +
+  '.fab-mute{background:rgba(15,23,42,.92)}html[data-theme=light] .fab-mute{background:rgba(255,255,255,.95)}' +
+  'html.dcz-lite .dcz-spark{text-shadow:none}' +
+  /* freeze effects while the page is being scrolled, so scrolling stays smooth */
+  '#portfolioGrid.dcz-scrolling .work-thumb svg,#portfolioGrid.dcz-scrolling .dcz-fx,#portfolioGrid.dcz-scrolling .dcz-fx *,#portfolioGrid.dcz-scrolling .dcz-fx::before,#portfolioGrid.dcz-scrolling .dcz-fx::after{animation-play-state:paused!important}';
 var ps = document.createElement('style');
 ps.id = 'dcz-perf-css';
 ps.textContent = pcss;
 document.head.appendChild(ps);
+
+var pgrid = document.getElementById('portfolioGrid'), pgTimer = null;
+if (pgrid) window.addEventListener('scroll', function () {
+  if (!pgrid.classList.contains('dcz-scrolling')) pgrid.classList.add('dcz-scrolling');
+  clearTimeout(pgTimer);
+  pgTimer = setTimeout(function () { pgrid.classList.remove('dcz-scrolling'); }, 160);
+}, { passive: true });
 
 var mdl = document.getElementById('modal'), vw = document.getElementById('viewer');
 if (mdl && 'MutationObserver' in window) {

@@ -1665,7 +1665,7 @@ document.addEventListener('copy', function () {
 showToast(lang === 'bn' ? 'ক্লিপবোর্ডে টেক্সট কপি করা হয়েছে!' : (lang === 'hi' ? 'क्लिपबोर्ड पर कॉपी किया गया!' : 'Copied to clipboard!'));
 });
 
-function priceRange(i) { return i.p1 + ' – ' + i.p2.replace('up to ', ''); }
+function priceRange(i) { var hi = (i.p2 || '').replace('up to ', ''); return hi ? i.p1 + ' – ' + hi : i.p1; }
 
 function renderServices() {
 const bn = lang === 'bn', hi = lang === 'hi';
@@ -1687,7 +1687,7 @@ return '' +
 '<div class="prices">' +
 '<div class="from">' + fromTxt + '</div>' +
 '<div class="p1">' + esc(item.p1) + '</div>' +
-'<div class="p2">' + esc(p2Txt) + '</div>' +
+(p2Txt ? '<div class="p2">' + esc(p2Txt) + '</div>' : '') +
 '</div>' +
 '<a class="item-quote" href="https://wa.me/' + WA_NUMBER + '?text=' + waText + '" target="_blank" rel="noopener noreferrer" aria-label="Enquire about ' + esc(item.name) + ' on WhatsApp">' + btnTxt + '</a>' +
 '</div>' +
@@ -1729,8 +1729,8 @@ if (show) card.style.setProperty('--i', visibleIdx++);
 });
 
 const HOURS = [['Mon – Sat', '10:00 AM – 8:00 PM'], ['Sunday', 'Closed']];
-const BN_H = { 'Mon – Sat': 'সোম – শনি', 'Sunday': 'রবিবার', 'Closed': 'বন্ধ' };
-const HI_H = { 'Mon – Sat': 'सोम – शनि', 'Sunday': 'रविवार', 'Closed': 'बंद' };
+const BN_H = { 'Mon – Sat': 'সোম – শনি', 'Sun – Sat': 'রবি – শনি', 'Sunday': 'রবিবার', 'Closed': 'বন্ধ' };
+const HI_H = { 'Mon – Sat': 'सोम – शनि', 'Sun – Sat': 'रवि – शनि', 'Sunday': 'रविवार', 'Closed': 'बंद' };
 
 const BN_SVC = [
 ['ফ্লেক্স ও ব্যানার ডিজাইন', 'দোকানের বোর্ড, হোর্ডিং ও উৎসবের ব্যানার (প্রিন্ট-রেডি)'],
@@ -1967,7 +1967,7 @@ return ["Hi Digital Creative Zone, I'd like to place an order.",
 'Print needed: ' + (o.print === 'yes' ? 'Yes' : 'No (design file only)'),
 'Deadline: ' + (o.date || 'Flexible')].join('\n');
 }
-function getLast() { try { return JSON.parse(localStorage.getItem('dcz-last')); } catch (e) { return null; } }
+function getLast() { try { var o = JSON.parse(localStorage.getItem('dcz-last')); if (!o) return null; if (o.sn) { var k = SERVICES.findIndex(function (s) { return s.name === o.sn; }); if (k < 0) return null; o.svc = k; } return o; } catch (e) { return null; } }
 function showRepeat() {
 const o = getLast(), b = document.getElementById('repeatBtn');
 if (!o || !SERVICES[o.svc]) { b.hidden = true; return; }
@@ -1988,7 +1988,7 @@ print: document.getElementById('oPrint').value,
 date: document.getElementById('oDate').value
 };
 if (!o.name || !SERVICES[o.svc]) { document.getElementById('oName').focus(); return; }
-try { localStorage.setItem('dcz-last', JSON.stringify({ name: o.name, svc: o.svc, size: o.size, qty: o.qty, print: o.print })); } catch (e2) {}
+try { localStorage.setItem('dcz-last', JSON.stringify({ name: o.name, svc: o.svc, sn: SERVICES[o.svc].name, size: o.size, qty: o.qty, print: o.print })); } catch (e2) {}
 showRepeat();
 triggerWhatsAppWithToast(buildMsg(o));
 });
@@ -2123,7 +2123,7 @@ applyLang((saved === 'bn' || saved === 'hi') ? saved : 'en');
 loadConfig();
 </script>
 
-<!-- ===== DCZ ADD-ON: animated samples, background music, mute button & live visitor tracker ===== -->
+<!-- ===== DCZ ADD-ON: animated samples, background music, mute button ===== -->
 <script id="dcz-addon">
 (function () {
 'use strict';
@@ -2476,25 +2476,6 @@ var pg = document.getElementById('portfolioGrid');
 if (pg) pg.addEventListener('keydown', function (e) {
   if (e.target.closest && e.target.closest('.work-cta')) e.stopPropagation();
 }, true);
-
-/* ---------- 5. Live Visitor Tracker (Syncs with Admin Panel) ---------- */
-var NS = 'dcz_tripura_2026';
-var BASE = 'https://api.counterapi.dev/v1/' + NS + '/';
-try {
-  /* Skip counting if you unlocked the Admin Panel on this browser (and kept exclusion enabled) */
-  if (localStorage.getItem('dcz-is-admin') !== '1') {
-    /* Count 1 Page View per browser session */
-    if (!sessionStorage.getItem('dcz-viewed')) {
-      sessionStorage.setItem('dcz-viewed', '1');
-      fetch(BASE + 'views/up').catch(function () {});
-    }
-    /* Count 1 Unique Visitor per device/browser */
-    if (!localStorage.getItem('dcz-uniq')) {
-      localStorage.setItem('dcz-uniq', '1');
-      fetch(BASE + 'unique/up').catch(function () {});
-    }
-  }
-} catch (e) {}
 
 })();
 </script>

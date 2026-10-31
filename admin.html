@@ -101,31 +101,6 @@ header a {
 }
 header a:hover { color: var(--tx); border-color: var(--bd-hover); }
 
-/* Header Visitor Badge */
-.v-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  padding: 5px 10px;
-  border-radius: 99px;
-  background: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.38);
-  color: #60a5fa;
-  font-family: var(--font-mono);
-  white-space: nowrap;
-  cursor: pointer;
-}
-html[data-theme="light"] .v-pill { color: #1d4ed8; background: rgba(59, 130, 246, 0.1); }
-.v-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 8px #3b82f6;
-}
-
 #st {
   font-size: 0.75rem;
   font-weight: 700;
@@ -167,40 +142,6 @@ main { max-width: 860px; margin: auto; padding: 4px 16px; }
   margin: 14px 0;
   box-shadow: var(--glass-highlight), 0 6px 20px -4px rgba(0, 0, 0, 0.18);
   animation: fadeInUp 0.28s ease forwards;
-}
-
-/* Visitor Stats Cards inside General Tab */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-top: 10px;
-}
-.stat-card {
-  background: var(--inp);
-  border: 1px solid var(--bd);
-  border-radius: 12px;
-  padding: 14px 16px;
-}
-.stat-card span {
-  display: block;
-  font-size: 0.76rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--mu);
-}
-.stat-card strong {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--tx);
-  margin: 4px 0 2px;
-}
-.stat-card small {
-  font-size: 0.76rem;
-  color: var(--mu);
 }
 
 h2 { font-size: 1.05rem; margin: 0 0 8px; font-weight: 800; }
@@ -388,10 +329,6 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 <header>
   <img src="logo-96.png" alt="">
   <h1>Admin Panel<small>Digital Creative Zone</small></h1>
-  <span class="v-pill" id="vBadge" title="Tap to refresh live visitor count">
-    <span class="v-dot"></span>
-    <span id="hdrUniq">…</span> Visitors
-  </span>
   <a href="./" target="_blank" rel="noopener">View site ↗</a>
   <button type="button" class="ic" id="themeBtn" title="Switch light or dark theme" aria-label="Switch theme">☀</button>
   <button type="button" class="ic" id="lockBtn" title="Lock panel">🔒 Lock</button>
@@ -415,48 +352,14 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 
 <script>
 // ==========================================
-// DEFAULT ADMIN PASSWORD & COUNTER NAMESPACE
-const DEFAULT_PASS = 'dcz@2026';
-const COUNTER_NS = 'dcz_tripura_2026';
+// DEFAULT ADMIN PASSWORD (stored only as a SHA-256 hash, not in plain text)
+const DEFAULT_HASH = '7eb62825a8729719ed3a68b0e19655105f1a7a28135e5f6bff6bb4fe4a6a1bf1';
+// NOTE: this lock only hides the screen. Real protection is your GitHub token.
 // ==========================================
 
 const $ = s => document.querySelector(s),
       clone = o => JSON.parse(JSON.stringify(o)),
       esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-/* Live Visitor Counter State & Fetcher */
-let vStats = { uniq: '—', views: '—', updated: 'Loading…' };
-
-async function fetchSingleCount(key) {
-  try {
-    const r = await fetch('https://api.counterapi.dev/v1/' + COUNTER_NS + '/' + key + '/', { cache: 'no-store' });
-    if (!r.ok) return 0;
-    const d = await r.json();
-    return Number(d.count) || 0;
-  } catch (e) {
-    return 0;
-  }
-}
-
-async function refreshVisitorStats(showToastFeedback) {
-  const [u, v] = await Promise.all([fetchSingleCount('unique'), fetchSingleCount('views')]);
-  vStats.uniq = u.toLocaleString('en-IN');
-  vStats.views = v.toLocaleString('en-IN');
-  vStats.updated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-  const hdr = $('#hdrUniq');
-  if (hdr) hdr.textContent = vStats.uniq;
-  const uEl = $('#statUniq');
-  if (uEl) uEl.textContent = vStats.uniq;
-  const vEl = $('#statViews');
-  if (vEl) vEl.textContent = vStats.views;
-  const tEl = $('#statTime');
-  if (tEl) tEl.textContent = 'Last synced: ' + vStats.updated;
-
-  if (showToastFeedback) say('Visitor stats refreshed!');
-}
-
-$('#vBadge').addEventListener('click', () => refreshVisitorStats(true));
 
 const CAT_META = {
   design: { label: 'Posters & Banners', color: '#f59e0b', icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15l3-3 2 2 4-4 2 2"/>' },
@@ -602,32 +505,37 @@ function say(t, er) {
 }
 
 /* Password Gate Logic */
-function getExpectedPass() { const s = ls(); return s.pass || DEFAULT_PASS; }
+async function sha256(str) {
+  if (!(window.crypto && crypto.subtle)) throw new Error('nocrypto');
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function passOk(input) {
+  const s = ls();
+  if (s.pass) return input === s.pass;            // old plain-text password from earlier version
+  return (await sha256(input)) === (s.passH || DEFAULT_HASH);
+}
 function checkAuth() {
   if (sessionStorage.getItem('dcz-unlocked') === '1') {
     $('#lockScreen').hidden = true;
-    /* By default, mark this browser as admin so your own visits don't inflate numbers */
-    if (localStorage.getItem('dcz-is-admin') === null) {
-      try { localStorage.setItem('dcz-is-admin', '1'); } catch (e) {}
-    }
   } else {
     $('#lockScreen').hidden = false;
     setTimeout(() => $('#pwInput').focus(), 50);
   }
 }
-$('#lockForm').addEventListener('submit', e => {
+$('#lockForm').addEventListener('submit', async e => {
   e.preventDefault();
-  if ($('#pwInput').value === getExpectedPass()) {
+  let ok = false;
+  try { ok = await passOk($('#pwInput').value); }
+  catch (_) { $('#lockErr').textContent = 'Open this page over https:// to unlock.'; $('#lockErr').style.display = 'block'; return; }
+  if (ok) {
     sessionStorage.setItem('dcz-unlocked', '1');
-    if (localStorage.getItem('dcz-is-admin') === null) {
-      try { localStorage.setItem('dcz-is-admin', '1'); } catch (err) {}
-    }
     $('#pwInput').value = '';
     $('#lockErr').style.display = 'none';
     $('#lockScreen').hidden = true;
-    refreshVisitorStats();
     say('Welcome back! Admin panel unlocked.');
   } else {
+    $('#lockErr').textContent = 'Incorrect password. Please try again.';
     $('#lockErr').style.display = 'block';
     $('#pwInput').select();
   }
@@ -646,19 +554,7 @@ const empty = (l, t) => '<div class="c"><p class="h">Nothing here yet. The secti
 
 const P = {
   gen: () => {
-    const ignoreMe = localStorage.getItem('dcz-is-admin') !== '0';
-    return '<div class="c">' +
-      '<div class="t"><h2>Website Traffic &amp; Visitor Analytics</h2><button type="button" class="ic" id="refStatsBtn">↻ Refresh</button></div>' +
-      '<div class="stat-grid">' +
-        '<div class="stat-card"><span>Unique Visitors</span><strong id="statUniq">' + esc(vStats.uniq) + '</strong><small>Individual people / browsers</small></div>' +
-        '<div class="stat-card"><span>Total Page Views</span><strong id="statViews">' + esc(vStats.views) + '</strong><small>Total browsing sessions</small></div>' +
-      '</div>' +
-      '<div class="row" style="justify-content:space-between;margin-top:12px">' +
-        '<label class="sw" style="margin:0;font-size:0.84rem"><input type="checkbox" id="ignoreAdminToggle"' + (ignoreMe ? ' checked' : '') + '> Exclude my own visits on this browser</label>' +
-        '<span class="h" id="statTime" style="margin:0">Last synced: ' + esc(vStats.updated) + '</span>' +
-      '</div>' +
-    '</div>' +
-    '<div class="c"><h2>WhatsApp number</h2>' + inp('wa', 'Country code + number, digits only') + '<p class="h">Changes every WhatsApp and call button on the site.</p></div>' +
+    return '<div class="c"><h2>WhatsApp number</h2>' + inp('wa', 'Country code + number, digits only') + '<p class="h">Changes every WhatsApp and call button on the site.</p></div>' +
     '<div class="c"><h2>Opening hours</h2>' + cfg.hours.map((r, i) => '<div class="g"><div>' + inp('hours.' + i + '.0', 'Days') + '</div><div>' + inp('hours.' + i + '.1', 'Time') + '</div></div><div class="t" style="border:0;margin-top:6px"><span></span>' + tools('hours', i) + '</div>').join('') + '<p class="h">Standard days (Mon – Sat, Sunday, Closed) auto-translate in Bengali &amp; Hindi.</p><div class="row">' + addBtn('hours', 'Add row') + '</div></div>';
   },
 
@@ -693,7 +589,7 @@ const P = {
 
   pub: () => {
     const s = ls();
-    return '<div class="c"><h2>Admin Password</h2><label>Change password for this device<input id="newPass" type="password" placeholder="Enter new password"></label><div class="row"><button type="button" id="savePass">Save new password</button><button type="button" id="resetPass">Reset to default (' + esc(DEFAULT_PASS) + ')</button></div></div>' +
+    return '<div class="c"><h2>Admin Password</h2><label>Change password for this device<input id="newPass" type="password" placeholder="Enter new password"></label><div class="row"><button type="button" id="savePass">Save new password</button><button type="button" id="resetPass">Reset to default password</button></div></div>' +
       '<div class="c"><h2>GitHub Connection (Auto-Updates config.json &amp; index.html SEO)</h2><label>Repository (owner/name)<input data-s="repo" value="' + esc(s.repo || 'digitalcreativezone/creative-zone1') + '"></label><label>Branch<input data-s="br" value="' + esc(s.br || 'main') + '"></label><label>Access token<input data-s="tok" type="password" autocomplete="off" value="' + esc(s.tok || '') + '"></label><p class="h">Create a fine-grained token on GitHub (Settings → Developer settings), limited to this repository, with Contents set to Read and Write. Publishing updates both config.json and the SEO Schema / fallback HTML inside index.html.</p><div class="row"><button type="button" id="forget">Forget token</button></div></div>' +
       '<div class="c"><h2>Backup &amp; Restore</h2><p class="h">Download config.json to keep a backup copy, or import an existing config.json file.</p><div class="row"><button type="button" id="imb">Import config.json</button><button type="button" id="rl">Reload from live site</button></div></div>';
   }
@@ -851,9 +747,14 @@ async function syncIndexHtmlSEO(c, repo, br, H) {
   if (!r.ok) return false;
   const data = await r.json();
   let html = fromB64(data.content);
+  const reLd = /(<script type="application\/ld\+json" id="ld-offers">)[\s\S]*?(<\/script>)/;
+  const reSv = /(<!--SERVICES:START-->)[\s\S]*?(<!--SERVICES:END-->)/;
+  if (!reLd.test(html) || !reSv.test(html)) return 'nomarkers';
+  const tel = c.wa.length === 12 && c.wa.indexOf('91') === 0 ? '+91-' + c.wa.slice(2, 7) + '-' + c.wa.slice(7) : '+' + c.wa;
   const updatedHtml = html
-    .replace(/(<script type="application\/ld\+json" id="ld-offers">)[\s\S]*?(<\/script>)/, (_, p1, p2) => p1 + buildOfferSchema(c) + p2)
-    .replace(/(<!--SERVICES:START-->)[\s\S]*?(<!--SERVICES:END-->)/, (_, p1, p2) => p1 + buildStaticCardsHTML(c) + p2);
+    .replace(reLd, (_, p1, p2) => p1 + buildOfferSchema(c) + p2)
+    .replace(reSv, (_, p1, p2) => p1 + buildStaticCardsHTML(c) + p2)
+    .replace(/("telephone":\s*")[^"]*(")/, (_, p1, p2) => p1 + tel + p2);
   if (updatedHtml === html) return true;
   const putRes = await fetch(indexUrl, {
     method: 'PUT',
@@ -894,7 +795,9 @@ async function publish() {
 
     dirty = false;
     st();
-    say(seoSynced ? 'Published config.json & synced index.html SEO!' : 'Published config.json! Live site updates in ~1 min.');
+    say(seoSynced === true ? 'Published config.json & synced index.html SEO!' :
+        seoSynced === 'nomarkers' ? 'Published config.json, but index.html SEO markers were not found, so SEO was NOT synced.' :
+        'Published config.json! SEO sync failed. Live site updates in ~1 min.');
   } catch (e) {
     say(
       e === 401 ? 'GitHub rejected the token. Create a new one under Publish & Security.' :
@@ -911,14 +814,6 @@ async function publish() {
 function fromSite() {
   return fetch('config.json?' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
 }
-
-document.addEventListener('change', e => {
-  if (e.target.id === 'ignoreAdminToggle') {
-    const exclude = e.target.checked;
-    try { localStorage.setItem('dcz-is-admin', exclude ? '1' : '0'); } catch (_) {}
-    say(exclude ? 'Your visits on this browser are now excluded.' : 'Your visits on this browser will now be counted.');
-  }
-});
 
 document.addEventListener('input', e => {
   const t = e.target;
@@ -948,11 +843,7 @@ document.addEventListener('input', e => {
   }
 });
 
-document.addEventListener('click', e => {
-  if (e.target.id === 'refStatsBtn') {
-    refreshVisitorStats(true);
-    return;
-  }
+document.addEventListener('click', async e => {
   const t = e.target.closest('[data-t]');
   if (t) { tab = t.dataset.t; return render(); }
   const b = e.target.closest('[data-a]');
@@ -975,13 +866,13 @@ document.addEventListener('click', e => {
   if (e.target.id === 'savePass') {
     const np = $('#newPass').value.trim();
     if (!np) return say('Please enter a new password first.', 1);
-    sv({ pass: np });
+    try { sv({ passH: await sha256(np), pass: '' }); } catch (_) { return say('Needs https:// to save a password.', 1); }
     $('#newPass').value = '';
     say('Admin password updated on this device.');
   }
   if (e.target.id === 'resetPass') {
-    sv({ pass: '' });
-    say('Password reset to default (' + DEFAULT_PASS + ').');
+    sv({ pass: '', passH: '' });
+    say('Password reset to the default one.');
   }
   if (e.target.id === 'forget') {
     sv({ tok: '' });
@@ -1033,9 +924,6 @@ window.addEventListener('beforeunload', e => {
 });
 
 render();
-refreshVisitorStats();
-/* Auto-refresh visitor count every 30 seconds while admin panel is open */
-setInterval(() => refreshVisitorStats(false), 30000);
 fromSite().then(c => { if (c && !dirty) { load(c); dirty = false; st(); } });
 </script>
 </body>

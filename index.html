@@ -2123,7 +2123,7 @@ applyLang((saved === 'bn' || saved === 'hi') ? saved : 'en');
 loadConfig();
 </script>
 
-<!-- ===== DCZ ADD-ON: animated samples, background music, mute button ===== -->
+<!-- ===== DCZ ADD-ON: animated samples ===== -->
 <script id="dcz-addon">
 (function () {
 'use strict';
@@ -2158,16 +2158,7 @@ var css = '' +
 '@keyframes dczBurst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}' +
 /* save battery: pause everything when sample is off-screen */
 '.work-thumb:not(.dcz-in) svg,.work-thumb:not(.dcz-in) .dcz-fx,.work-thumb:not(.dcz-in) .dcz-fx *,.work-thumb:not(.dcz-in) .dcz-fx::before,.work-thumb:not(.dcz-in) .dcz-fx::after{animation-play-state:paused}' +
-/* mute / unmute button (mirror of the WhatsApp button, left side) */
-'.fab-mute{position:fixed;left:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:45;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;padding:0;cursor:pointer;background:var(--bg-elevated);border:1.5px solid var(--accent-light);color:var(--accent-light);box-shadow:0 6px 18px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .25s ease,color .2s ease,border-color .2s ease}' +
-'.fab-mute:hover{transform:scale(1.06)}' +
-'.fab-mute svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}' +
-'.fab-mute .ic-off{display:none}.fab-mute.is-off .ic-on{display:none}.fab-mute.is-off .ic-off{display:block}' +
-'.fab-mute.is-off{color:var(--muted);border-color:var(--border-hover)}' +
-'.fab-mute:not(.is-off)::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--accent-light);opacity:0;animation:dczRing 2s ease-out infinite;pointer-events:none}' +
-'@keyframes dczRing{0%{opacity:.7;transform:scale(.9)}100%{opacity:0;transform:scale(1.35)}}' +
-'@media (max-width:520px){.fab-mute{width:44px;height:44px;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}.fab-mute svg{width:20px;height:20px}}' +
-'@media (prefers-reduced-motion:reduce){.dcz-fx{display:none}.work-thumb svg{animation:none!important}.fab-mute::after{display:none}}';
+'@media (prefers-reduced-motion:reduce){.dcz-fx{display:none}.work-thumb svg{animation:none!important}}';
 var st = document.createElement('style');
 st.id = 'dcz-addon-css';
 st.textContent = css;
@@ -2249,173 +2240,6 @@ thumbs.forEach(function (t) {
   }
 });
 
-/* ---------- 3. Background music (generated in-browser, no audio file needed) ---------- */
-var AC = window.AudioContext || window.webkitAudioContext;
-var ctx = null, master = null, bus = null, noiseBuf = null, timer = null;
-var nextT = 0, step = 0, STEP = 0.3;
-var muted = false;
-try { muted = localStorage.getItem('dcz-muted') === '1'; } catch (e) {}
-
-function mtof(m) { return 440 * Math.pow(2, (m - 69) / 12); }
-var CHORDS = [[60, 64, 67], [57, 60, 64], [57, 60, 65], [55, 59, 62]];
-var ROOTS = [48, 45, 41, 43];
-var MEL = [
-  [79, 0, 76, 0, 74, 76, 0, 0],
-  [76, 0, 72, 0, 69, 72, 0, 0],
-  [77, 0, 76, 0, 72, 0, 69, 72],
-  [74, 0, 76, 74, 71, 0, 67, 0]
-];
-var ARP = [0, 1, 2, 1, 2, 1, 0, 1];
-
-function tone(f, t, dur, type, vol, atk, dest) {
-  var o = ctx.createOscillator(), g = ctx.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t);
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.linearRampToValueAtTime(vol, t + atk);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(g); g.connect(dest || bus);
-  o.start(t); o.stop(t + dur + 0.05);
-}
-function kick(t) {
-  var o = ctx.createOscillator(), g = ctx.createGain();
-  o.type = 'sine';
-  o.frequency.setValueAtTime(130, t);
-  o.frequency.exponentialRampToValueAtTime(45, t + 0.18);
-  g.gain.setValueAtTime(0.22, t);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
-  o.connect(g); g.connect(bus); o.start(t); o.stop(t + 0.3);
-}
-function hat(t) {
-  var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
-  s.buffer = noiseBuf; f.type = 'highpass'; f.frequency.value = 7000;
-  g.gain.setValueAtTime(0.03, t);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-  s.connect(f); f.connect(g); g.connect(bus); s.start(t);
-}
-
-function playStep(s, t) {
-  var bar = Math.floor(s / 8) % 4, e = s % 8, ch = CHORDS[bar];
-  if (e === 0) ch.forEach(function (m) { tone(mtof(m), t, STEP * 8, 'triangle', 0.045, 0.25); });
-  if (e === 0 || e === 4) { tone(mtof(ROOTS[bar]), t, STEP * 3.5, 'sine', 0.17, 0.02); kick(t); }
-  tone(mtof(ch[ARP[e]] + 12), t, STEP * 1.6, 'triangle', 0.06, 0.01, pluck);
-  var mn = MEL[bar][e];
-  if (mn) tone(mtof(mn), t, STEP * 2.2, 'sine', 0.085, 0.02, pluck);
-  if (e % 2 === 1 && !LITE) hat(t);
-}
-
-var pluck = null;
-function sched() {
-  if (!ctx) return;
-  while (nextT < ctx.currentTime + 0.25) {
-    playStep(step % 32, nextT);
-    nextT += STEP; step++;
-  }
-}
-
-function ensureCtx() {
-  if (ctx || !AC) return !!ctx;
-  ctx = new AC();
-  master = ctx.createGain(); master.gain.value = 0;
-  var comp = ctx.createDynamicsCompressor();
-  bus = ctx.createGain(); bus.gain.value = 1;
-  bus.connect(comp); comp.connect(master); master.connect(ctx.destination);
-  /* light echo for the plucks */
-  pluck = ctx.createGain(); pluck.gain.value = 1;
-  var dl = ctx.createDelay(1), fb = ctx.createGain(), wet = ctx.createGain();
-  dl.delayTime.value = 0.3; fb.gain.value = 0.3; wet.gain.value = LITE ? 0 : 0.35;
-  pluck.connect(bus); pluck.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(bus);
-  var len = Math.floor(ctx.sampleRate * 0.06);
-  noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
-  var d = noiseBuf.getChannelData(0);
-  for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-  ctx.onstatechange = updateUI;
-  nextT = ctx.currentTime + 0.1; step = 0;
-  timer = setInterval(sched, 60);
-  return true;
-}
-
-function setVol(v) {
-  if (!ctx) return;
-  var t = ctx.currentTime;
-  master.gain.cancelScheduledValues(t);
-  master.gain.setValueAtTime(master.gain.value, t);
-  master.gain.linearRampToValueAtTime(v, t + 0.25);
-}
-function play() {
-  if (!ensureCtx()) return;
-  var p = ctx.resume();
-  if (p && p.catch) p.catch(function () {});
-  setVol(0.6);
-  updateUI();
-}
-function silence() {
-  if (!ctx) return;
-  setVol(0);
-  setTimeout(function () {
-    if (muted && ctx && ctx.state === 'running') { var p = ctx.suspend(); if (p && p.catch) p.catch(function () {}); }
-  }, 350);
-  updateUI();
-}
-
-/* ---------- 4. Mute / unmute button (left side, opposite WhatsApp) ---------- */
-var btn = document.createElement('button');
-btn.type = 'button';
-btn.id = 'dczMute';
-btn.className = 'fab-mute is-off';
-btn.innerHTML =
-  '<svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>' +
-  '<svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
-document.body.appendChild(btn);
-
-function isOn() { return !!ctx && ctx.state === 'running' && !muted; }
-function updateUI() {
-  var on = isOn();
-  btn.classList.toggle('is-off', !on);
-  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  var L = (typeof lang !== 'undefined') ? lang : 'en';
-  btn.setAttribute('aria-label', on
-    ? (L === 'bn' ? 'মিউজিক বন্ধ করুন' : (L === 'hi' ? 'संगीत म्यूट करें' : 'Mute music'))
-    : (L === 'bn' ? 'মিউজিক চালু করুন' : (L === 'hi' ? 'संगीत चालू करें' : 'Unmute music')));
-  btn.title = btn.getAttribute('aria-label');
-}
-function say(m) { if (typeof showToast === 'function') showToast(m); }
-
-btn.addEventListener('click', function () {
-  var L = (typeof lang !== 'undefined') ? lang : 'en';
-  if (muted) {
-    muted = false; try { localStorage.setItem('dcz-muted', '0'); } catch (e) {}
-    play();
-    say(L === 'bn' ? 'মিউজিক চালু' : (L === 'hi' ? 'संगीत चालू' : 'Music on'));
-  } else if (!ctx || ctx.state !== 'running') {
-    play(); /* browser was blocking autoplay: first tap just starts it */
-  } else {
-    muted = true; try { localStorage.setItem('dcz-muted', '1'); } catch (e) {}
-    silence();
-    say(L === 'bn' ? 'মিউজিক বন্ধ' : (L === 'hi' ? 'संगीत बंद' : 'Music muted'));
-  }
-});
-
-/* Browsers block sound until the visitor interacts: start on the first tap/key/click */
-var unlockEvents = ['pointerdown', 'touchend', 'click', 'keydown'];
-function unlock(e) {
-  if (e && e.target && btn.contains(e.target)) return;
-  if (muted) return;
-  play();
-  if (ctx && ctx.state === 'running') unlockEvents.forEach(function (n) { document.removeEventListener(n, unlock, true); });
-}
-unlockEvents.forEach(function (n) { document.addEventListener(n, unlock, true); });
-
-/* Pause music while the tab is hidden */
-document.addEventListener('visibilitychange', function () {
-  if (!ctx) return;
-  if (document.hidden) { var p = ctx.suspend(); if (p && p.catch) p.catch(function () {}); }
-  else if (!muted) { var q = ctx.resume(); if (q && q.catch) q.catch(function () {}); }
-});
-
-/* Try autoplay right away (works only where the browser allows it) */
-if (!muted) play();
-updateUI();
-
 /* Performance: smoother swiping in the popup viewer */
 var pcss =
   /* shine: move with transform (GPU) instead of animating "left" (layout) */
@@ -2434,9 +2258,8 @@ var pcss =
   /* the popup background is already ~90% opaque: skip the costly live blur */
   '.modal{-webkit-backdrop-filter:none;backdrop-filter:none}' +
   /* live blur behind a moving page is very costly: drop it (backgrounds are already ~90% opaque) */
-  '.navbar,.hero-card,.toast,.fab-mute{-webkit-backdrop-filter:none;backdrop-filter:none}' +
+  '.navbar,.hero-card,.toast{-webkit-backdrop-filter:none;backdrop-filter:none}' +
   '.navbar{background:rgba(7,11,20,.96)}html[data-theme=light] .navbar{background:rgba(248,250,252,.97)}' +
-  '.fab-mute{background:rgba(15,23,42,.92)}html[data-theme=light] .fab-mute{background:rgba(255,255,255,.95)}' +
   'html.dcz-lite .dcz-spark{text-shadow:none}' +
   /* freeze effects while the page is being scrolled, so scrolling stays smooth */
   '#portfolioGrid.dcz-scrolling .work-thumb svg,#portfolioGrid.dcz-scrolling .dcz-fx,#portfolioGrid.dcz-scrolling .dcz-fx *,#portfolioGrid.dcz-scrolling .dcz-fx::before,#portfolioGrid.dcz-scrolling .dcz-fx::after{animation-play-state:paused!important}';
@@ -2466,10 +2289,6 @@ if (vw) {
     swTimer = setTimeout(function () { vw.classList.remove('dcz-swiping'); }, 140);
   }, { passive: true });
 }
-
-/* Fix: keep the speaker button label in the chosen language */
-var lb = document.getElementById('langBtn');
-if (lb) lb.addEventListener('click', function () { setTimeout(updateUI, 0); });
 
 /* Fix: Enter/Space on a "Request Similar" link must follow the link, not open the popup */
 var pg = document.getElementById('portfolioGrid');

@@ -722,7 +722,7 @@ color: var(--text);
 font-size: 0.95rem;
 cursor: pointer;
 }
-.x:hover { background: rgba(255, 255, 255, 255, 0.15); }
+.x:hover { background: rgba(255, 255, 255, 0.15); }
 
 /* Animated Success Toast Notification */
 .toast {
@@ -1722,7 +1722,7 @@ listEl.innerHTML = SERVICES.map(function (item, n) {
 const waText = encodeURIComponent("Hi Digital Creative Zone, I'd like a quote for " + item.name + " (" + priceRange(item) + ").");
 const svcName = bn ? (BN_SVC[n] ? BN_SVC[n][0] : item.name) : (hi ? (HI_SVC[n] ? HI_SVC[n][0] : item.name) : item.name);
 const svcDesc = bn ? (BN_SVC[n] ? BN_SVC[n][1] : item.desc) : (hi ? (HI_SVC[n] ? HI_SVC[n][1] : item.desc) : item.desc);
-const fromTxt = bn ? 'শুরু' : (hi ? 'शुरुआती कीमत' : 'Starting from');
+const fromTxt = bn ? 'শুরু থেকে' : (hi ? 'शुरुआती कीमत' : 'Starting from');
 const p2Txt = bn ? item.p2.replace('up to ', 'সর্বোচ্চ ') : (hi ? item.p2.replace('up to ', 'अधिकतम ') : item.p2);
 const btnTxt = bn ? 'জানুন →' : (hi ? 'पूछताछ करें →' : 'Enquire →');
 return '' +
@@ -1776,7 +1776,7 @@ if (show) card.style.setProperty('--i', visibleIdx++);
 });
 });
 
-const HOURS = [['Mon – Sat', '10:00 AM – 8:00 PM'], ['Sunday', 'Closed']];
+const HOURS = [['Sun – Sat', '9:00 AM – 9:00 PM']];
 const BN_H = { 'Mon – Sat': 'সোম – শনি', 'Sun – Sat': 'রবি – শনি', 'Sunday': 'রবিবার', 'Closed': 'বন্ধ' };
 const HI_H = { 'Mon – Sat': 'सोम – शनि', 'Sun – Sat': 'रवि – शनि', 'Sunday': 'रविवार', 'Closed': 'बंद' };
 

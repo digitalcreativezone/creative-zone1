@@ -382,7 +382,7 @@ const DEFAULT_SERVICES = [
 
 const DEF = {
   wa: '918730074910',
-  hours: [['Mon – Sat', '10:00 AM – 8:00 PM'], ['Sunday', 'Closed']],
+  hours: [['Sun – Sat', '9:00 AM – 9:00 PM']],
   services: clone(DEFAULT_SERVICES),
   banner: { on: false, en: '', bn: '', hi: '', link: '' },
   packages: [],
@@ -736,7 +736,7 @@ function buildStaticCardsHTML(c) {
       '<div class="item-top"><div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24">' + item.icon + '</svg></div>' +
       '<div class="name">' + esc(item.name) + '<small>' + esc(item.desc) + '</small></div></div>' +
       '<div class="item-bottom"><div class="prices"><div class="from">Starting from</div><div class="p1">' + esc(item.p1) + '</div>' +
-      '<div class="p2">' + esc(item.p2) + '</div></div>' +
+      (item.p2 ? '<div class="p2">' + esc(item.p2) + '</div>' : '') + '</div>' +
       '<a class="item-quote" href="https://wa.me/' + c.wa + '?text=' + waText + '" target="_blank" rel="noopener noreferrer" aria-label="Enquire about ' + esc(item.name) + ' on WhatsApp">Enquire →</a></div></article>';
   }).join('');
 }

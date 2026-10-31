@@ -6,9 +6,9 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#070b14">
 <title>Admin – Digital Creative Zone</title>
-<link rel="icon" href="favicon-64.png">
+<link rel="icon" href="https://digitalcreativezone.github.io/creative-zone1/favicon-64.png">
 <link rel="manifest" href="admin.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="https://digitalcreativezone.github.io/creative-zone1/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="DCZ Admin">
@@ -323,7 +323,7 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 <!-- Password Protection Screen -->
 <div id="lockScreen">
   <form class="lock-box" id="lockForm">
-    <img src="logo-96.png" alt="Logo">
+    <img src="https://digitalcreativezone.github.io/creative-zone1/logo-96.png" alt="Logo">
     <h2>Admin Login</h2>
     <p id="lockSub">Enter your admin password to continue</p>
     <input type="password" id="pwInput" placeholder="Enter password" required autocomplete="current-password">
@@ -333,9 +333,9 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 </div>
 
 <header>
-  <img src="logo-96.png" alt="">
+  <img src="https://digitalcreativezone.github.io/creative-zone1/logo-96.png" alt="">
   <h1>Admin Panel<small>Digital Creative Zone</small></h1>
-  <a href="./" target="_blank" rel="noopener">View site ↗</a>
+  <a href="https://digitalcreativezone.github.io/creative-zone1/" target="_blank" rel="noopener">View site ↗</a>
   <button type="button" class="ic" id="themeBtn" title="Switch light or dark theme" aria-label="Switch theme">☀</button>
   <button type="button" class="ic" id="lockBtn" title="Lock panel">🔒 Lock</button>
   <span id="st">Up to date</span>
@@ -818,7 +818,7 @@ async function publish() {
 }
 
 function fromSite() {
-  return fetch('config.json?' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+  return fetch('https://digitalcreativezone.github.io/creative-zone1/config.json?' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
 }
 
 document.addEventListener('input', e => {
@@ -932,7 +932,7 @@ window.addEventListener('beforeunload', e => {
 render();
 fromSite().then(c => { if (c && !dirty) { load(c); dirty = false; st(); } });
 if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
-  navigator.serviceWorker.register('sw.js').catch(function () {});
+  navigator.serviceWorker.register('admin-sw.js').catch(function () {});
 }
 </script>
 </body>

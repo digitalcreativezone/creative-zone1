@@ -4,21 +4,12 @@
   "short_name": "DCZ Admin",
   "description": "Admin panel for the Digital Creative Zone website",
   "start_url": "./admin.html",
-  "scope": "./admin.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#070b14",
   "theme_color": "#070b14",
   "icons": [
-    {
-      "src": "logo-96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "https://digitalcreativezone.github.io/creative-zone1/logo-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "https://digitalcreativezone.github.io/creative-zone1/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" }
   ]
 }

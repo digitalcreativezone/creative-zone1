@@ -292,6 +292,18 @@ border-color: var(--accent-light);
 color: var(--accent-light);
 }
 
+.nav-backdrop {
+position: fixed;
+inset: 0;
+z-index: 38;
+background: rgba(0, 0, 0, 0.35);
+opacity: 0;
+visibility: hidden;
+transition: opacity .28s ease, visibility 0s linear .28s;
+}
+.nav-backdrop.show { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
+@media (min-width: 821px) { .nav-backdrop { display: none; } }
+
 /* Main Container — extra bottom padding so FAB never overlaps footer/buttons */
 main { max-width: 1160px; margin: 0 auto; padding: 36px 20px 116px; }
 
@@ -1628,18 +1640,28 @@ const waFab = document.getElementById('waFab');
 
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-/* Mobile Quick-Jump Menu Toggle */
-menuBtn.addEventListener('click', function () {
-const isOpen = mobileNav.classList.toggle('open');
-menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-menuBtn.textContent = isOpen ? '✕' : '☰';
+/* Mobile Quick-Jump Menu Toggle (tap ☰ to open; tap outside, a link, or press Esc to close) */
+const navBackdrop = document.createElement('div');
+navBackdrop.className = 'nav-backdrop';
+document.body.appendChild(navBackdrop);
+function setMenu(open) {
+mobileNav.classList.toggle('open', open);
+navBackdrop.classList.toggle('show', open);
+menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+menuBtn.textContent = open ? '✕' : '☰';
+}
+menuBtn.addEventListener('click', function (e) {
+e.stopPropagation();
+setMenu(!mobileNav.classList.contains('open'));
 });
 mobileNav.addEventListener('click', function (e) {
-if (e.target.closest('a')) {
-mobileNav.classList.remove('open');
-menuBtn.setAttribute('aria-expanded', 'false');
-menuBtn.textContent = '☰';
-}
+if (e.target.closest('a')) setMenu(false);
+});
+document.addEventListener('click', function (e) {
+if (mobileNav.classList.contains('open') && !mobileNav.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false);
+});
+document.addEventListener('keydown', function (e) {
+if (e.key === 'Escape' && mobileNav.classList.contains('open')) setMenu(false);
 });
 
 /* Auto-hide Floating WhatsApp Button when user interacts with Order Form or views Contact Banner */

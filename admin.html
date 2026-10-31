@@ -7,6 +7,12 @@
 <meta name="theme-color" content="#070b14">
 <title>Admin – Digital Creative Zone</title>
 <link rel="icon" href="favicon-64.png">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DCZ Admin">
+<meta name="application-name" content="DCZ Admin">
 <script>try{var t=localStorage.getItem('dcz-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -925,6 +931,9 @@ window.addEventListener('beforeunload', e => {
 
 render();
 fromSite().then(c => { if (c && !dirty) { load(c); dirty = false; st(); } });
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+}
 </script>
 </body>
 </html>

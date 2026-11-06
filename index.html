@@ -1465,6 +1465,7 @@ Chanban, Udaipur, Gomati, Tripura
 <p id="oSub">Fill in the details and everything reaches our WhatsApp in one message.</p>
 <form id="orderForm" class="oform">
 <label><span id="lName">Your name</span><input id="oName" required autocomplete="name"></label>
+<label><span id="lPhone">Your phone number</span><input id="oPhone" type="tel" inputmode="tel" required pattern="[0-9+ ]{10,15}" maxlength="15" autocomplete="tel"></label>
 <label><span id="lSvc">Service</span><select id="oService" required></select></label>
 <label><span id="lDate">Deadline</span><input id="oDate" type="date"></label>
 <label><span id="lSize">Size (optional)</span><input id="oSize" placeholder="e.g. 4x6 ft, A4, 1080x1080"></label>
@@ -1539,6 +1540,10 @@ Visit us: Chanban, Udaipur, Gomati, Tripura
 </div>
 </div>
 </div>
+
+<!-- Firebase (order saving) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
 const SERVICES = [
@@ -1626,6 +1631,36 @@ icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><pa
 ];
 
 let WA_NUMBER = '918730074910';
+
+/* ===== Firebase: order saving (Firestore) ===== */
+const FB_CONFIG = {
+  apiKey: "AIzaSyBxJ00FIAZwrA04gImSBGHNC0T5g5ESxL0",
+  authDomain: "dcz-orders.firebaseapp.com",
+  projectId: "dcz-orders",
+  storageBucket: "dcz-orders.firebasestorage.app",
+  messagingSenderId: "635278999444",
+  appId: "1:635278999444:web:b97c53a105f6f7176f9981"
+};
+let db = null;
+try { firebase.initializeApp(FB_CONFIG); db = firebase.firestore(); } catch (e) {}
+
+function saveOrder(o, msg) {
+  if (!db) return;
+  try {
+    db.collection('orders').add({
+      name: o.name,
+      phone: o.phone || '',
+      service: SERVICES[o.svc].name,
+      size: o.size || '',
+      qty: o.qty,
+      print: o.print,
+      deadline: o.date || '',
+      text: msg,
+      status: 'new',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function () {});
+  } catch (e) {}
+}
 
 const listEl = document.getElementById('list');
 const tabsEl = document.getElementById('tabs');
@@ -1823,7 +1858,7 @@ const BN_UI = [
 ['.tab[data-pf="all"]', 'সব (৮)'], ['.tab[data-pf="banners"]', 'পোস্টার ও ব্যানার'],
 ['.tab[data-pf="social"]', 'সোশ্যাল বিজ্ঞাপন'], ['.tab[data-pf="branding"]', 'লোগো ও কার্ড'], ['.tab[data-pf="websites"]', 'ওয়েবসাইট'],
 ['#oTitle', 'কাস্টম অর্ডার'], ['#oSub', 'তথ্য পূরণ করুন, সব এক মেসেজে আমাদের হোয়াটসঅ্যাপে পৌঁছে যাবে।'],
-['#lName', 'আপনার নাম'], ['#lSvc', 'সার্ভিস'], ['#lDate', 'ডেডলাইন'], ['#oSend', 'হোয়াটসঅ্যাপে পাঠান'],
+['#lName', 'আপনার নাম'], ['#lPhone', 'আপনার ফোন নম্বর'], ['#lSvc', 'সার্ভিস'], ['#lDate', 'ডেডলাইন'], ['#oSend', 'হোয়াটসঅ্যাপে পাঠান'],
 ['#visit-title', 'আমাদের দোকানে আসুন'], ['#hrsTitle', 'খোলার সময়'],
 ['#modalTitle', 'পোর্টফোলিও ও প্রিন্ট মকআপ'], ['.tag-badge', 'আইডিয়া • ডিজাইন • ইমপ্যাক্ট'],
 ['.stat-box:nth-child(1) strong', 'দ্রুত'], ['.stat-box:nth-child(1) span', '২৪–৪৮ ঘণ্টায় ডেলিভারি'],
@@ -1858,7 +1893,7 @@ const HI_UI = [
 ['.tab[data-pf="all"]', 'सभी (8)'], ['.tab[data-pf="banners"]', 'पोस्टर और बैनर'],
 ['.tab[data-pf="social"]', 'सोशल विज्ञापन'], ['.tab[data-pf="branding"]', 'लोगो और कार्ड'], ['.tab[data-pf="websites"]', 'वेबसाइट'],
 ['#oTitle', 'कस्टम ऑर्डर'], ['#oSub', 'विवरण भरें, सब कुछ एक मैसेज में हमारे व्हाट्सएप पर पहुंच जाएगा।'],
-['#lName', 'आपका नाम'], ['#lSvc', 'सेवा'], ['#lDate', 'डेडलाइन'], ['#oSend', 'व्हाट्सएप पर भेजें'],
+['#lName', 'आपका नाम'], ['#lPhone', 'आपका फ़ोन नंबर'], ['#lSvc', 'सेवा'], ['#lDate', 'डेडलाइन'], ['#oSend', 'व्हाट्सएप पर भेजें'],
 ['#visit-title', 'हमारी दुकान पर आएं'], ['#hrsTitle', 'खुलने का समय'],
 ['#modalTitle', 'पोर्टफोलियो और प्रिंट मॉकअप'], ['.tag-badge', 'आइडिया • डिज़ाइन • इम्पैक्ट'],
 ['.stat-box:nth-child(1) strong', 'तेज़'], ['.stat-box:nth-child(1) span', '24–48 घंटे में डिलीवरी'],
@@ -2009,6 +2044,7 @@ function buildMsg(o) {
 const it = SERVICES[o.svc];
 return ["Hi Digital Creative Zone, I'd like to place an order.",
 'Name: ' + o.name,
+'Phone: ' + (o.phone || '-'),
 'Service: ' + it.name + ' (' + priceRange(it) + ')',
 'Size: ' + (o.size || 'Not sure / please suggest'),
 'Quantity: ' + o.qty,
@@ -2029,6 +2065,7 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
 e.preventDefault();
 const o = {
 name: document.getElementById('oName').value.trim(),
+phone: document.getElementById('oPhone').value.trim(),
 svc: +document.getElementById('oService').value,
 size: document.getElementById('oSize').value.trim(),
 qty: Math.max(1, parseInt(document.getElementById('oQty').value, 10) || 1),
@@ -2036,18 +2073,23 @@ print: document.getElementById('oPrint').value,
 date: document.getElementById('oDate').value
 };
 if (!o.name || !SERVICES[o.svc]) { document.getElementById('oName').focus(); return; }
-try { localStorage.setItem('dcz-last', JSON.stringify({ name: o.name, svc: o.svc, sn: SERVICES[o.svc].name, size: o.size, qty: o.qty, print: o.print })); } catch (e2) {}
+try { localStorage.setItem('dcz-last', JSON.stringify({ name: o.name, phone: o.phone, svc: o.svc, sn: SERVICES[o.svc].name, size: o.size, qty: o.qty, print: o.print })); } catch (e2) {}
 showRepeat();
-triggerWhatsAppWithToast(buildMsg(o));
+const msg = buildMsg(o);
+saveOrder(o, msg);
+triggerWhatsAppWithToast(msg);
 });
 document.getElementById('repeatBtn').addEventListener('click', function () {
 const o = getLast(); if (!o) return;
 o.date = '';
-triggerWhatsAppWithToast(buildMsg(o) + '\n(Repeat order: please confirm the deadline with me)');
+if (!o.phone) o.phone = document.getElementById('oPhone').value.trim();
+const msg = buildMsg(o) + '\n(Repeat order: please confirm the deadline with me)';
+saveOrder(o, msg);
+triggerWhatsAppWithToast(msg);
 });
 (function () {
 const o = getLast();
-if (o) { document.getElementById('oName').value = o.name || ''; document.getElementById('oSize').value = o.size || ''; document.getElementById('oQty').value = o.qty || 1; }
+if (o) { document.getElementById('oName').value = o.name || ''; document.getElementById('oPhone').value = o.phone || ''; document.getElementById('oSize').value = o.size || ''; document.getElementById('oQty').value = o.qty || 1; }
 })();
 
 const total = viewer.children.length;

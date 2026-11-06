@@ -232,6 +232,17 @@ html[data-theme="light"] .bar { background: rgba(248, 250, 252, 0.9); }
   font-size: 0.9rem;
 }
 .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.row a {
+  color: var(--tx);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+}
+.row a:hover { border-color: var(--bd-hover); }
 
 /* Animated Toast Notification */
 .toast {
@@ -350,11 +361,17 @@ html[data-theme="light"] .toast { background: rgba(255, 255, 255, 0.96); color: 
 </div>
 <input type="file" id="imp" accept=".json,application/json" hidden>
 
+<!-- Firebase (orders) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
 // ==========================================
 // DEFAULT ADMIN PASSWORD (stored only as a SHA-256 hash, not in plain text)
 const DEFAULT_HASH = '7eb62825a8729719ed3a68b0e19655105f1a7a28135e5f6bff6bb4fe4a6a1bf1';
-// NOTE: this lock only hides the screen. Real protection is your GitHub token.
+// NOTE: this lock only hides the screen. Real protection is your GitHub token
+// (for config) and your Firebase login (for orders).
 // ==========================================
 
 const $ = s => document.querySelector(s),
@@ -456,6 +473,7 @@ const EX = {
 };
 
 const TABS = [
+  ['ord', 'Orders'],
   ['gen', 'General'],
   ['svc', 'Services & Prices'],
   ['ban', 'Offer Banner'],
@@ -553,6 +571,8 @@ const addBtn = (l, t) => '<button type="button" data-a="add" data-l="' + l + '">
 const empty = (l, t) => '<div class="c"><p class="h">Nothing here yet. The section stays hidden on your site until you add something.</p><div class="row">' + addBtn(l, 'Add ' + t) + '<button type="button" data-a="ex" data-l="' + l + '">Insert draft examples</button></div></div>';
 
 const P = {
+  ord: () => '<div class="c"><h2>Orders</h2><p class="h">Orders sent through the Custom Order form on your site. Sign in with your Firebase login to view them.</p><div id="ordBox"><p class="h">Loading…</p></div></div>',
+
   gen: () => {
     return '<div class="c"><h2>WhatsApp number</h2>' + inp('wa', 'Country code + number, digits only') + '<p class="h">Changes every WhatsApp and call button on the site.</p></div>' +
     '<div class="c"><h2>Opening hours</h2>' + cfg.hours.map((r, i) => '<div class="g"><div>' + inp('hours.' + i + '.0', 'Days') + '</div><div>' + inp('hours.' + i + '.1', 'Time') + '</div></div><div class="t" style="border:0;margin-top:6px"><span></span>' + tools('hours', i) + '</div>').join('') + '<p class="h">Standard days (Mon – Sat, Sunday, Closed) auto-translate in Bengali &amp; Hindi.</p><div class="row">' + addBtn('hours', 'Add row') + '</div></div>';
@@ -603,8 +623,10 @@ function st() {
 
 function render() {
   st();
+  if (tab !== 'ord' && unsub) { unsub(); unsub = null; }
   $('nav').innerHTML = TABS.map(t => '<button type="button" data-t="' + t[0] + '" aria-selected="' + (t[0] === tab) + '">' + t[1] + '</button>').join('');
   $('#p').innerHTML = P[tab]();
+  if (tab === 'ord') initOrders();
 }
 
 function load(c) {
@@ -921,6 +943,76 @@ $('#dl').addEventListener('click', () => {
 
 window.addEventListener('beforeunload', e => {
   if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ===== Orders (Firebase Firestore + Auth) ===== */
+const FB_CONFIG = {
+  apiKey: "AIzaSyBxJ00FIAZwrA04gImSBGHNC0T5g5ESxL0",
+  authDomain: "dcz-orders.firebaseapp.com",
+  projectId: "dcz-orders",
+  storageBucket: "dcz-orders.firebasestorage.app",
+  messagingSenderId: "635278999444",
+  appId: "1:635278999444:web:b97c53a105f6f7176f9981"
+};
+let fdb = null, fauth = null, unsub = null;
+
+function initOrders() {
+  if (!fdb) {
+    try {
+      firebase.initializeApp(FB_CONFIG);
+      fdb = firebase.firestore();
+      fauth = firebase.auth();
+      fauth.onAuthStateChanged(() => ordView());
+    } catch (e) {
+      const box = $('#ordBox');
+      if (box) box.innerHTML = '<p class="h">Could not start Firebase. Check your internet connection and the firebaseConfig.</p>';
+      return;
+    }
+  }
+  ordView();
+}
+
+function ordView() {
+  const box = $('#ordBox');
+  if (!box || tab !== 'ord' || !fauth) return;
+  if (unsub) { unsub(); unsub = null; }
+  if (!fauth.currentUser) {
+    box.innerHTML = '<label>Email<input id="ordEmail" type="email" autocomplete="username"></label><label>Password<input id="ordPass" type="password" autocomplete="current-password"></label><div class="row"><button type="button" class="p" id="ordLogin">Sign in to view orders</button></div>';
+    return;
+  }
+  unsub = fdb.collection('orders').orderBy('createdAt', 'desc').limit(200).onSnapshot(snap => {
+    const out = '<div class="row"><button type="button" id="ordOut">Sign out</button></div>';
+    if (!snap.size) { box.innerHTML = '<p class="h">No orders yet.</p>' + out; return; }
+    box.innerHTML = out + snap.docs.map(d => {
+      const o = d.data(),
+            t = o.createdAt && o.createdAt.toDate ? o.createdAt.toDate().toLocaleString('en-IN') : 'just now',
+            ph = String(o.phone || '').replace(/[^0-9]/g, '');
+      return '<div class="c"><div class="t"><b>' + esc(o.name) + (o.status === 'new' ? ' 🔴' : ' ✅') + '</b><span>' +
+        '<button type="button" class="ic" data-oa="done" data-id="' + d.id + '">' + (o.status === 'new' ? 'Mark done' : 'Reopen') + '</button>' +
+        '<button type="button" class="ic" data-oa="del" data-id="' + d.id + '">✕</button></span></div>' +
+        '<p class="h">' + esc(t) + '</p>' +
+        '<p><b>' + esc(o.service) + '</b> × ' + esc(o.qty) + '</p>' +
+        '<p class="h">Size: ' + esc(o.size || '-') + ' · Print: ' + (o.print === 'yes' ? 'Yes' : 'No') + ' · Deadline: ' + esc(o.deadline || 'Flexible') + '</p>' +
+        '<div class="row">' + (o.phone ? '<a href="tel:' + esc(o.phone) + '">📞 ' + esc(o.phone) + '</a>' : '') +
+        (ph ? '<a href="https://wa.me/' + (ph.length === 10 ? '91' : '') + ph + '" target="_blank" rel="noopener">WhatsApp customer</a>' : '') + '</div></div>';
+    }).join('');
+  }, () => { box.innerHTML = '<p class="h">Could not load orders. Check your login and Firestore rules.</p><div class="row"><button type="button" id="ordOut">Sign out</button></div>'; });
+}
+
+document.addEventListener('click', async e => {
+  const id = e.target.id, a = e.target.dataset.oa;
+  if (id === 'ordLogin') {
+    try { await fauth.signInWithEmailAndPassword($('#ordEmail').value.trim(), $('#ordPass').value); }
+    catch (_) { say('Wrong email or password.', 1); }
+  }
+  if (id === 'ordOut') fauth.signOut();
+  if (a === 'del' && confirm('Delete this order?')) fdb.collection('orders').doc(e.target.dataset.id).delete().catch(() => say('Could not delete.', 1));
+  if (a === 'done') {
+    try {
+      const ref = fdb.collection('orders').doc(e.target.dataset.id), s = await ref.get();
+      await ref.update({ status: s.data().status === 'new' ? 'done' : 'new' });
+    } catch (_) { say('Could not update the order.', 1); }
+  }
 });
 
 render();

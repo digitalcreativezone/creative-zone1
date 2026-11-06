@@ -1644,12 +1644,12 @@ const FB_CONFIG = {
 let db = null;
 try { firebase.initializeApp(FB_CONFIG); db = firebase.firestore(); } catch (e) {}
 
-/* ===== Telegram order alert ===== */
-const TELEGRAM_BOT_TOKEN = "8856618692:AAH-z768ifpU39oLMBHOuj6SsW9MzlGUzqI";
-const TELEGRAM_CHAT_ID = "8299298961";
+/* ===== Telegram order alert (sent through a private Cloudflare Worker; no token in this file) ===== */
+const ALERT_URL = "https://dcz-alerts.sourajyotidebnath57.workers.dev";
 
 function sendTelegramAlert(o, msg) {
   try {
+    if (!ALERT_URL || ALERT_URL.indexOf('PASTE_') === 0) return;
     const svc = (SERVICES[o.svc] && SERVICES[o.svc].name) || '-';
     const text =
       '🚨 New Order Received! — DCZ\n' +
@@ -1660,10 +1660,10 @@ function sendTelegramAlert(o, msg) {
       '📦 Order Details:\n' + (msg || '-') + '\n' +
       '━━━━━━━━━━━━━━━━━━\n' +
       '⏰ Time: ' + new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-    fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
+    fetch(ALERT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text }),
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({ text: text }),
       keepalive: true
     }).catch(function () {});
   } catch (e) {}

@@ -1644,7 +1644,33 @@ const FB_CONFIG = {
 let db = null;
 try { firebase.initializeApp(FB_CONFIG); db = firebase.firestore(); } catch (e) {}
 
+/* ===== Telegram order alert ===== */
+const TELEGRAM_BOT_TOKEN = "8856618692:AAH-z768ifpU39oLMBHOuj6SsW9MzlGUzqI";
+const TELEGRAM_CHAT_ID = "8299298961";
+
+function sendTelegramAlert(o, msg) {
+  try {
+    const svc = (SERVICES[o.svc] && SERVICES[o.svc].name) || '-';
+    const text =
+      '🚨 New Order Received! — DCZ\n' +
+      '━━━━━━━━━━━━━━━━━━\n' +
+      '👤 Name: ' + (o.name || '-') + '\n' +
+      '📞 Phone: ' + (o.phone || '-') + '\n' +
+      '🛠 Service: ' + svc + '\n' +
+      '📦 Order Details:\n' + (msg || '-') + '\n' +
+      '━━━━━━━━━━━━━━━━━━\n' +
+      '⏰ Time: ' + new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+    fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text }),
+      keepalive: true
+    }).catch(function () {});
+  } catch (e) {}
+}
+
 function saveOrder(o, msg) {
+  sendTelegramAlert(o, msg);
   if (!db) return;
   try {
     db.collection('orders').add({

@@ -242,7 +242,7 @@
   function renderServices() {
     if (!SERVICES.length) return;
     const bn = lang === 'bn';
-    listEl.innerHTML = SERVICES.map(function (item, n) {
+    const markup = SERVICES.map(function (item, n) {
       const waText = encodeURIComponent("Hi Digital Creative Zone, I'd like a quote for " + item.name + " (" + priceRange(item) + ").");
       const svcName = bn ? (item.bnName || item.name) : item.name;
       const svcDesc = bn ? (item.bnDesc || item.desc) : item.desc;
@@ -266,6 +266,17 @@
         '</article>'
       );
     }).join('');
+
+    /* Skip the DOM swap when the prerendered/previous cards are identical: no flicker, no replayed fade-in */
+    const probe = document.createElement('div');
+    probe.innerHTML = markup;
+    const sameAsLive = listEl.children.length === probe.children.length &&
+      Array.prototype.every.call(probe.children, function (el, i) {
+        const live = listEl.children[i];
+        return live.dataset.serviceName === el.dataset.serviceName &&
+          live.innerHTML === el.innerHTML;
+      });
+    if (!sameAsLive) listEl.innerHTML = markup;
 
     const activeTab = tabsEl.querySelector('[aria-pressed="true"]');
     const f = activeTab ? activeTab.dataset.f : 'all';

@@ -815,7 +815,7 @@ async function publish() {
     st();
     say(seoSynced === true ? 'Published config.json & synced index.html SEO!' :
         seoSynced === 'nomarkers' ? 'Published config.json, but index.html SEO markers were not found, so SEO was NOT synced.' :
-        'Published config.json! SEO sync failed. Live site updates in ~1 min.');
+        'Published config.json! SEO sync failed. The site still shows your changes within seconds.');
   } catch (e) {
     say(
       e === 401 ? 'GitHub rejected the token. Create a new one under Publish & Security.' :

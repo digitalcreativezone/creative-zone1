@@ -2221,10 +2221,20 @@ return '<details><summary>' + esc(t(x.q, x.qBn)) + '</summary><p>' + esc(t(x.a, 
 document.addEventListener('click', function (e) {
 if (e.target.closest('#offerX')) { offerClosed = true; document.getElementById('offerBar').hidden = true; }
 });
+let lastSig = '';
+function fetchConfig() {
+  /* Read config.json straight from GitHub (live seconds after a commit); fall back to the hosted copy */
+  const GH = 'https://api.github.com/repos/digitalcreativezone/creative-zone1/contents/config.json?ref=main';
+  const ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 4000);
+  return fetch(GH, { cache: 'no-store', headers: { Accept: 'application/vnd.github.raw+json' }, signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { clearTimeout(tm); if (!r.ok) throw 0; return r.json(); })
+    .catch(function () { clearTimeout(tm); return fetch('config.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }); });
+}
 function loadConfig() {
 if (!window.fetch) return;
-fetch('config.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+fetchConfig().then(function (c) {
 if (!c) return;
+const sig = JSON.stringify(c); if (sig === lastSig) return; lastSig = sig;
 cfg = c;
 if (/^\d{8,15}$/.test(c.wa || '')) {
 WA_NUMBER = c.wa;
@@ -2251,6 +2261,11 @@ let saved = null;
 try { saved = localStorage.getItem('dcz-lang'); } catch (e) {}
 applyLang(saved === 'bn' ? 'bn' : 'en');
 loadConfig();
+/* pick up admin changes while the page is open */
+let lastLoad = Date.now();
+function refreshConfig() { if (!document.hidden && Date.now() - lastLoad > 60000) { lastLoad = Date.now(); loadConfig(); } }
+setInterval(refreshConfig, 300000);
+document.addEventListener('visibilitychange', refreshConfig);
 </script>
 
 <!-- ===== DCZ ADD-ON: animated samples ===== -->

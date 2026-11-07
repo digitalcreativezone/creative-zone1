@@ -961,7 +961,6 @@ main>section{padding-block:var(--sec-y)}
 .rv{opacity:0;transform:translateY(14px);transition:opacity .28s ease,transform .28s ease}.rv.rv-in{opacity:1;transform:none}
 /* form */
 .oform input:user-invalid,.oform select:user-invalid{border-color:#ef4444}
-#oSummary{grid-column:1/-1;font-size:var(--fs-sm);color:var(--muted);padding:12px;border:1px dashed var(--border);border-radius:12px;white-space:pre-line}
 @media(prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none}}
 </style>
 </head>
@@ -2461,11 +2460,6 @@ if('IntersectionObserver' in window){
 var nb=document.querySelector('.navbar'),sm=false;
 addEventListener('scroll',function(){var v=scrollY>40;if(v!==sm){sm=v;nb.classList.toggle('nav-sm',v);}},{passive:true});
 var f=document.getElementById('orderForm');
-var box=document.createElement('div');box.id='oSummary';f.insertBefore(box,document.getElementById('oSend'));
-function g(id){return document.getElementById(id);}
-function sum(){box.hidden=!(g('oName').value||g('oPhone').value);
- var s=g('oService');box.textContent='Will be sent on WhatsApp:\n'+(g('oName').value||'—')+' · '+(g('oPhone').value||'—')+'\n'+(s.selectedOptions[0]?s.selectedOptions[0].text:'')+' × '+(g('oQty').value||1);}
-f.addEventListener('input',sum);f.addEventListener('change',sum);setTimeout(sum,300);
 })();
 </script>
 </body>

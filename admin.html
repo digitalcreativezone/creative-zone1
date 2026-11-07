@@ -29,9 +29,18 @@
   color-scheme: dark;
 }
 
-html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after {
+html.theme-switching *:not(.theme-fade), html.theme-switching *:not(.theme-fade)::before, html.theme-switching *:not(.theme-fade)::after {
   transition: none !important;
   animation: none !important;
+}
+::view-transition-old(root), ::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: ease-in-out;
+  mix-blend-mode: normal;
+}
+.theme-fade {
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 1;
+  transition: opacity 0.45s ease-in-out !important;
 }
 
 html[data-theme="light"] {
@@ -460,18 +469,35 @@ const sv = o => { try { localStorage.setItem('dcz-admin', JSON.stringify(Object.
 
 /* Theme Switcher */
 const themeBtn = $('#themeBtn');
-function applyTheme(t, save) {
+let themeTimer = null;
+function applyTheme(t, save, animate) {
   const root = document.documentElement;
-  root.classList.add('theme-switching');
-  root.dataset.theme = t;
-  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => root.classList.remove('theme-switching'), 60)));
-  document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
-  themeBtn.textContent = t === 'light' ? '☾' : '☀';
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const swap = () => {
+    root.dataset.theme = t;
+    document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
+    themeBtn.textContent = t === 'light' ? '☾' : '☀';
+  };
+  clearTimeout(themeTimer);
   if (save) { try { localStorage.setItem('dcz-theme', t); } catch (e) {} }
+  if (!animate || reduce) { swap(); return; }
+  root.classList.add('theme-switching');
+  if (document.startViewTransition) {
+    const done = () => root.classList.remove('theme-switching');
+    document.startViewTransition(swap).finished.then(done, done);
+  } else {
+    const veil = document.createElement('div');
+    veil.className = 'theme-fade';
+    veil.style.background = getComputedStyle(document.body).backgroundColor;
+    document.body.appendChild(veil);
+    swap();
+    requestAnimationFrame(() => requestAnimationFrame(() => { veil.style.opacity = '0'; }));
+    themeTimer = setTimeout(() => { veil.remove(); root.classList.remove('theme-switching'); }, 510);
+  }
 }
 themeBtn.addEventListener('click', () => {
   const cur = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-  applyTheme(cur, true);
+  applyTheme(cur, true, true);
 });
 applyTheme(document.documentElement.dataset.theme || 'dark');
 

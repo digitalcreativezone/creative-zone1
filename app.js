@@ -563,25 +563,47 @@
   /* ===== Theme Switcher ===== */
   const themeBtn = document.getElementById('themeBtn');
   let themeTimer = null;
-  function applyTheme(t, save) {
+  const FADE_MS = 450;
+  function applyTheme(t, save, animate) {
     const root = document.documentElement;
-    root.classList.add('theme-switching');
-    root.dataset.theme = t;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function swap() {
+      root.dataset.theme = t;
+      document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
+      themeBtn.textContent = t === 'light' ? '☾' : '☀';
+    }
     clearTimeout(themeTimer);
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        themeTimer = setTimeout(function () { root.classList.remove('theme-switching'); }, 60);
-      });
-    });
-    document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
-    themeBtn.textContent = t === 'light' ? '☾' : '☀';
     if (save) {
       try { localStorage.setItem('dcz-theme', t); } catch (_) {}
+    }
+    if (!animate || reduce) { swap(); return; }
+
+    root.classList.add('theme-switching');
+    if (document.startViewTransition) {
+      // GPU crossfade: browser snapshots old & new page and fades between them
+      const vt = document.startViewTransition(swap);
+      vt.finished.then(function () { root.classList.remove('theme-switching'); },
+                       function () { root.classList.remove('theme-switching'); });
+    } else {
+      // Fallback: cover the page with the old background colour, swap underneath, fade the cover out
+      const old = getComputedStyle(document.body).backgroundColor;
+      const veil = document.createElement('div');
+      veil.className = 'theme-fade';
+      veil.style.background = old;
+      document.body.appendChild(veil);
+      swap();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { veil.style.opacity = '0'; });
+      });
+      themeTimer = setTimeout(function () {
+        veil.remove();
+        root.classList.remove('theme-switching');
+      }, FADE_MS + 60);
     }
   }
   themeBtn.addEventListener('click', function () {
     const current = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-    applyTheme(current, true);
+    applyTheme(current, true, true);
   });
   applyTheme(document.documentElement.dataset.theme || 'dark');
 

@@ -92,12 +92,26 @@ body {
   overflow-x: clip;
 }
 
-/* Theme switch: kill every transition for one moment so the whole page repaints once, instantly */
-html.theme-switching *,
-html.theme-switching *::before,
-html.theme-switching *::after {
+/* Theme switch: elements never animate individually; the whole page crossfades once */
+html.theme-switching *:not(.theme-fade),
+html.theme-switching *:not(.theme-fade)::before,
+html.theme-switching *:not(.theme-fade)::after {
   transition: none !important;
   animation: none !important;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: ease-in-out;
+  mix-blend-mode: normal;
+}
+.theme-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s ease-in-out !important;
 }
 html.theme-switching .item,
 html.theme-switching .work-card,

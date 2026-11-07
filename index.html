@@ -2132,10 +2132,6 @@ const msg = buildMsg(o) + '\n(Repeat order: please confirm the deadline with me)
 saveOrder(o, msg);
 triggerWhatsAppWithToast(msg);
 });
-(function () {
-const o = getLast();
-if (o) { document.getElementById('oName').value = o.name || ''; document.getElementById('oPhone').value = o.phone || ''; document.getElementById('oSize').value = o.size || ''; document.getElementById('oQty').value = o.qty || 1; }
-})();
 
 const total = viewer.children.length;
 function cur() { return Math.round(viewer.scrollLeft / viewer.clientWidth) || 0; }

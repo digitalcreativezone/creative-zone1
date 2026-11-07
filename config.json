@@ -108,7 +108,7 @@
     }
   ],
   "banner": {
-    "on": true,
+    "on": false,
     "en": "Special Offers Are Here! Get Quality Creative Designs, Printing & Digital Services at Affordable Prices. Explore Our Packages Today!",
     "bn": "বিশেষ অফার চলছে! সাশ্রয়ী মূল্যে উন্নতমানের ডিজাইন, প্রিন্টিং ও ডিজিটাল পরিষেবা পেতে আজই আমাদের প্যাকেজগুলি দেখুন!",
     "link": ""

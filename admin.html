@@ -29,6 +29,11 @@
   color-scheme: dark;
 }
 
+html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 html[data-theme="light"] {
   --bg: #f8fafc;
   --card: rgba(255, 255, 255, 0.88);
@@ -66,7 +71,6 @@ body {
   min-height: 100dvh;
   padding-bottom: 104px;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 header {
@@ -457,7 +461,10 @@ const sv = o => { try { localStorage.setItem('dcz-admin', JSON.stringify(Object.
 /* Theme Switcher */
 const themeBtn = $('#themeBtn');
 function applyTheme(t, save) {
-  document.documentElement.dataset.theme = t;
+  const root = document.documentElement;
+  root.classList.add('theme-switching');
+  root.dataset.theme = t;
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => root.classList.remove('theme-switching'), 60)));
   document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
   themeBtn.textContent = t === 'light' ? '☾' : '☀';
   if (save) { try { localStorage.setItem('dcz-theme', t); } catch (e) {} }

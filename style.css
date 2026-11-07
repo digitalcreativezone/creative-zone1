@@ -90,7 +90,19 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   overflow-x: clip;
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme switch: kill every transition for one moment so the whole page repaints once, instantly */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+  animation: none !important;
+}
+html.theme-switching .item,
+html.theme-switching .work-card,
+html.theme-switching .pkg {
+  opacity: 1 !important;
 }
 
 [hidden] {
@@ -164,13 +176,10 @@ body {
   z-index: 40;
   background: rgba(7, 11, 20, 0.96);
   border-bottom: 1px solid var(--border);
-  transition: padding 0.2s ease, box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 html[data-theme="light"] .navbar {
   background: rgba(248, 250, 252, 0.97);
-}
-.navbar.nav-sm .nav-inner {
-  padding-block: 6px;
 }
 .navbar.nav-sm {
   box-shadow: 0 6px 20px -12px rgba(0, 0, 0, 0.6);
@@ -184,7 +193,6 @@ html[data-theme="light"] .navbar {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  transition: padding 0.2s ease;
 }
 
 .brand {
@@ -1548,13 +1556,6 @@ html[data-theme="light"] .toast {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-/* Below-the-fold rendering optimization */
-#portfolio { content-visibility: auto; contain-intrinsic-size: auto 1400px; }
-#order { content-visibility: auto; contain-intrinsic-size: auto 640px; }
-#visit { content-visibility: auto; contain-intrinsic-size: auto 560px; }
-#faq { content-visibility: auto; contain-intrinsic-size: auto 420px; }
-#contact { content-visibility: auto; contain-intrinsic-size: auto 360px; }
 
 /* Responsive Breakpoints */
 @media (max-width: 820px) {

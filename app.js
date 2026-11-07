@@ -551,8 +551,17 @@
 
   /* ===== Theme Switcher ===== */
   const themeBtn = document.getElementById('themeBtn');
+  let themeTimer = null;
   function applyTheme(t, save) {
-    document.documentElement.dataset.theme = t;
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+    root.dataset.theme = t;
+    clearTimeout(themeTimer);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        themeTimer = setTimeout(function () { root.classList.remove('theme-switching'); }, 60);
+      });
+    });
     document.querySelector('meta[name="theme-color"]').content = t === 'light' ? '#f8fafc' : '#070b14';
     themeBtn.textContent = t === 'light' ? '☾' : '☀';
     if (save) {
